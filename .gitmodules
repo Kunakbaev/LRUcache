@@ -1,0 +1,3 @@
+[submodule "3dPartyModules/LoggerLib"]
+	path = 3dPartyModules/LoggerLib
+	url = git@github.com:Kunakbaev/LoggerLib.git
