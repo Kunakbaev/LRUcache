@@ -11,6 +11,7 @@ set(CMAKE_CXX_FLAGS             "-D _DEBUG -lm -ggdb3 -std=c++17 -O0 -Werror -Wa
 set(MY_LOG_LIB_NAME             "my_loglib")
 set(BUILD_DIR_PATH              "{CMAKE_SOURCE_DIR}/../")
 set(LRU_CACHE_DIR_PATH          "LRUcache/source/")
+# set(LRU_CACHE_DIR_PATH          "LRUcache/source/")
 set(CACHE_DRIVER_DIR_PATH       "cacheDriver/")
 set(WEB_PAGE_DIR_PATH           "webPage/source/")
 set(TESTS_DIR_PATH              "tests")
@@ -27,7 +28,10 @@ find_package(GTest REQUIRED)
 add_executable(
   run_tests
   ${WEB_PAGE_DIR_PATH}/source.cpp
-  ${TESTS_DIR_PATH}/tests.cpp
+  ${TESTS_DIR_PATH}/tests_lru_cache_corr.cpp
+  ${TESTS_DIR_PATH}/tests_lru2q_cache_corr.cpp
+  ${TESTS_DIR_PATH}/tests_proph_cache_corr.cpp
+  # ${TESTS_DIR_PATH}/tests_lru_efficiency.cpp
 )
 
 set_target_properties(lru_cache

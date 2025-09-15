@@ -4,6 +4,8 @@
 #include "../3dPartyModules/LoggerLib/include/logLib.hpp"
 #include "../webPage/include/webPageStruct.hpp"
 #include "../LRUcache/include/LRUcacheStruct.hpp"
+#include "../prophecyCache/include/prophecyCache.hpp"
+#include "../2qCache/2qCache.hpp"
 
 static const char* const STR_NOT_NUM_ERR_MSG        = "Error: input string must be a positive integer...";
 static const char* const NUM_IS_TOO_BIG_ERR_MSG     = "Error: input number is too big...";
@@ -72,17 +74,26 @@ int main() {
   Input(max_cache_size, num_of_queries);
   LOG_DEBUG_VARS(max_cache_size, num_of_queries);
 
-  cache_t<page_t, size_t> cache(max_cache_size);
+  std::vector<size_t> requests(num_of_queries);
+  for (auto& it : requests) {
+    // it = SafelyReadPositiveInt("Input page index: ", MAX_PAGE_INDEX);
+    std::cin >> it;
+  }
+  //cache_t<page_t, size_t> cache(max_cache_size);
+  lru2q_cache_t<page_t, size_t> cache(max_cache_size);
+  //prophecy_cache_t<page_t, size_t> cache(max_cache_size, requests);
 
   size_t hits = 0;
   for (size_t _ = 0; _ < num_of_queries; ++_) {
     page_t page;
-    page.index = SafelyReadPositiveInt("Input page index: ", MAX_PAGE_INDEX);
+    page.index = requests[_];
+    // page.index = SafelyReadPositiveInt("Input page index: ", MAX_PAGE_INDEX);
     // size_t page_index;
     // std::cin >> page_index;
     // page.set_page_index(page_index);
 
-    assert(std::cin.good());
+    // assert(std::cin.good());
+    LOG_ERROR("-----------------");
     LOG_DEBUG_VARS(page.index);
     if (cache.lookup_update(page, page.index, slow_get_page)) {
       hits += 1;
@@ -97,3 +108,23 @@ int main() {
 
   return 0;
 }
+
+/*
+
+tests from presentation:
+4
+12
+1
+2
+3
+4
+1
+2
+5
+1
+2
+4
+3
+4
+
+*/

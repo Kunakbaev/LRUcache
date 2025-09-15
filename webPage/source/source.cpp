@@ -26,6 +26,7 @@ void slow_get_page(std::size_t search_index, page_t& page) {
   std::cerr << "Your page is loading..." << std::endl;
   std::this_thread::sleep_for(TIMESPAN);
 
+  page.index = search_index;
   for (auto tmp : all_pages) {
     if (tmp.index == search_index) {
       page = tmp;
