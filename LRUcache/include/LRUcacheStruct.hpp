@@ -24,6 +24,7 @@ class cache_t {
     return cache_.size() == max_cache_sz_;
   }
 
+  // returns true on cache hit and false on cache miss
   template <typename F>
   bool lookup_update(T& element, KeyT key, F slow_get_page) {
     auto hit = hash_.find(key);
