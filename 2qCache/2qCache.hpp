@@ -1,7 +1,7 @@
 #pragma once
 
 #include <map>
-#include <set>
+#include <unordered_set>
 #include <stack>
 #include <vector>
 #include <list>
@@ -14,7 +14,7 @@ template <typename T, typename KeyT = int>
 class lru2q_cache_t {
  private:
   // = new_pages_capacity / hot_pages_capacity
-  static constexpr double NEW_ELEMS_CAPACITY_RATIOS = 0.75;
+  static constexpr double NEW_ELEMS_CAPACITY_RATIOS = 0.25;
   const size_t max_cache_sz_ = 0;
   const size_t new_elems_cap_;
   const size_t hot_elems_cap_;
@@ -24,12 +24,12 @@ class lru2q_cache_t {
   std::list<T> new_elems_list_ = {};
   std::unordered_map<KeyT, ListIt> hot_elems_pos_ = {};
   std::unordered_map<KeyT, ListIt> new_elems_pos_ = {};
-  std::set<KeyT> ghost_keys_buff_ = {};
+  std::unordered_set<KeyT> ghost_keys_buff_ = {};
 
  public:
   lru2q_cache_t(size_t max_cache_sz)
       : max_cache_sz_(max_cache_sz),
-      new_elems_cap_(static_cast<size_t>((1 - NEW_ELEMS_CAPACITY_RATIOS) * 
+      new_elems_cap_(static_cast<size_t>(NEW_ELEMS_CAPACITY_RATIOS * 
                                          static_cast<double>(max_cache_sz))),
       hot_elems_cap_(max_cache_sz - new_elems_cap_)
   {
@@ -63,6 +63,7 @@ class lru2q_cache_t {
     if (hit != hot_elems_pos_.end()) {
       auto elem_it = hit->second;
       element = *elem_it;
+
       // transfer found element to the beginning
       // by shifting other elements to the right
       if (elem_it != hot_elems_list_.begin()) {
@@ -75,11 +76,32 @@ class lru2q_cache_t {
 
     auto hit2 = new_elems_pos_.find(key);
     if (hit2 != new_elems_pos_.end()) {
-      element = *hit2->second;
+      T promoted_elem = *hit2->second;
+      element = promoted_elem;
+
+      // Remove from new list
+      new_elems_list_.erase(hit2->second);
+      new_elems_pos_.erase(key);
+
+      add_elem2_hot_elems(key, promoted_elem);
+
       return true;
     }
 
     return false;
+  }
+
+  void add_elem2_hot_elems(KeyT key, const T& element) {
+    // make space in hot elems if needed
+    if (is_hot_elems_full()) {
+      KeyT evicted = hot_elems_list_.back().index;
+      LOG_DEBUG_VARS(evicted);
+      hot_elems_list_.pop_back();
+      hot_elems_pos_.erase(evicted);
+    }
+
+    hot_elems_list_.push_front(element);
+    hot_elems_pos_[key] = hot_elems_list_.begin();
   }
 
   // returns true on cache hit and false on cache miss
@@ -113,15 +135,7 @@ class lru2q_cache_t {
     auto ghost = ghost_keys_buff_.find(key);
     if (ghost != ghost_keys_buff_.end()) {
       ghost_keys_buff_.erase(ghost);
-      if (is_hot_elems_full()) {
-        KeyT evicted = hot_elems_list_.back().index;
-        LOG_DEBUG_VARS(evicted);
-        hot_elems_list_.pop_back();
-        hot_elems_pos_.erase(evicted);
-      }
-
-      hot_elems_list_.push_front(element);
-      hot_elems_pos_[key] = hot_elems_list_.begin();
+      add_elem2_hot_elems(key, element);
       return false;
     } else {
       new_elems_list_.push_back(element);

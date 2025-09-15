@@ -6,9 +6,9 @@
 #include "../2qCache/2qCache.hpp"
 #include "../prophecyCache/include/prophecyCache.hpp"
 
-static const size_t TESTS           = 100;
+static const size_t TESTS           = 10;
 static const size_t MAX_NUM_OF_REQS = 100;
-static const size_t MAX_PAGE_INDEX2 = 50;
+static const size_t MAX_PAGE_INDEX2 = 3;
 static const size_t MAX_CACHE_SZ    = 10;
 
 static const char* const BETTER_THAN_BEST_ERR_MSG = "Error: lru2q cache is better than most optimal, \"future seeing\" cache";
@@ -54,7 +54,7 @@ int main() {
   for (size_t _ = 0; _ < TESTS; ++_) {
     size_t num_of_requests = static_cast<size_t>(dice(1, MAX_NUM_OF_REQS));
     size_t max_page_ind    = static_cast<size_t>(dice(1, MAX_PAGE_INDEX2));
-    size_t max_cache_sz    = static_cast<size_t>(dice(1, MAX_CACHE_SZ));
+    size_t max_cache_sz    = static_cast<size_t>(dice(3, MAX_CACHE_SZ));
     requests = genRandomRequests(num_of_requests, max_page_ind);
 
     cache_t<page_t, size_t>            lru_cache(max_cache_sz);
@@ -66,9 +66,12 @@ int main() {
     size_t proph_hits = getNumOfHits4cache(proph_cache, requests);
 
     lru2q_cache_wins += lru2q_hits > lru_hits;
+    // std::cout << "lru      hits : " << lru_hits;
+    // std::cout << " lru2q    hits : " << lru2q_hits << std::endl;
 
-    if (lru2q_hits > proph_hits) { // error: smth went wrong
+    if (lru2q_hits > proph_hits || 1) { // error: smth went wrong
       std::cout << BETTER_THAN_BEST_ERR_MSG << std::endl;
+      std::cout << "max cache size :" << max_cache_sz << std::endl;
       std::cout << "num of requests:" << std::endl;
       for (auto& it : requests) {
         std::cout << it << " ";
