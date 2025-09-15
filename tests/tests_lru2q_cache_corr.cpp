@@ -27,7 +27,7 @@ TEST(CacheTest, TestFromPresentationLRU2qCache) {
   for (auto [is_hit, index] : queries) {
     LOG_DEBUG_VARS(is_hit, index);
     EXPECT_EQ(cache.lookup_update(page, index, slow_get_page), is_hit);
-    cache.dump_cache();
+    // cache.dump_cache();
   }
 }
 

@@ -23,8 +23,10 @@ const page_t all_pages[] = {
 const size_t TOT_NUM_OF_PAGES = sizeof(all_pages) / sizeof(*all_pages);
 
 void slow_get_page(std::size_t search_index, page_t& page) {
+#ifndef TESTS_
   std::cerr << "Your page is loading..." << std::endl;
   std::this_thread::sleep_for(TIMESPAN);
+#endif
 
   page.index = search_index;
   for (auto tmp : all_pages) {

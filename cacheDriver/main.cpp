@@ -99,7 +99,9 @@ int main() {
       hits += 1;
     }
 
+#ifdef _DEBUG
     cache.dump_cache();
+#endif
   }
 
   double percent = static_cast<double>(hits) / static_cast<double>(num_of_queries);     
