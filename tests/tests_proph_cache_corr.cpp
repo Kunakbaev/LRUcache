@@ -3,11 +3,6 @@
 #include "tests_structs.hpp"
 #include "../prophecyCache/include/prophecyCache.hpp"
 
-// static const std::vector<CacheTest> params1 = {
-//   test1,
-//   test2_from_presentation
-// };
-
 using queries_list_t = std::vector<std::pair<bool, size_t>>;
 
 static std::vector<size_t> GetRequestsFromQueries(const queries_list_t& queries) {

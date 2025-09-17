@@ -66,10 +66,7 @@ int main() {
     size_t proph_hits = getNumOfHits4cache(proph_cache, requests);
 
     lru2q_cache_wins += lru2q_hits > lru_hits;
-    // std::cout << "lru      hits : " << lru_hits;
-    // std::cout << " lru2q    hits : " << lru2q_hits << std::endl;
-
-    if (lru2q_hits > proph_hits || 1) { // error: smth went wrong
+    if (lru2q_hits > proph_hits) { // error: smth went wrong
       std::cout << BETTER_THAN_BEST_ERR_MSG << std::endl;
       std::cout << "max cache size :" << max_cache_sz << std::endl;
       std::cout << "num of requests:" << std::endl;

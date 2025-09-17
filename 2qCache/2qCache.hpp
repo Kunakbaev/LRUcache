@@ -33,8 +33,6 @@ class lru2q_cache_t {
                                          static_cast<double>(max_cache_sz))),
       hot_elems_cap_(max_cache_sz - new_elems_cap_)
   {
-    // new_elems_cap_ = NEW_ELEMS_CAPACITY_RATIOS * static_cast<double>(max_cache_sz);
-    // hot_elems_cap_ = (1 - NEW_ELEMS_CAPACITY_RATIOS) * static_cast<double>(max_cache_sz);
     setLoggingLevel(DEBUG);
     LOG_DEBUG_VARS(new_elems_cap_, hot_elems_cap_);
   }
