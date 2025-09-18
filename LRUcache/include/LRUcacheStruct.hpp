@@ -16,9 +16,7 @@ class cache_t {
   std::unordered_map<KeyT, ListIt> hash_ = {};
 
  public:
-  cache_t(size_t max_cache_sz) : max_cache_sz_(max_cache_sz) {
-
-  }
+  cache_t(size_t max_cache_sz) : max_cache_sz_(max_cache_sz) {}
 
   bool is_full() const {
     return cache_.size() == max_cache_sz_;

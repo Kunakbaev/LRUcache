@@ -9,12 +9,12 @@
 static const size_t TESTS           = 100;
 static const size_t MAX_NUM_OF_REQS = 100;
 static const size_t MAX_PAGE_INDEX2 = 5;
-static const size_t MAX_CACHE_SZ    = 20;
-static const double ZIPF_ALPHA      = 0.8;
+static const size_t MAX_CACHE_SZ    = 10;
+static const double ZIPF_ALPHA      = 0.86;
 
 static const char* const BETTER_THAN_BEST_ERR_MSG = "Error: lru2q cache is better than most optimal, \"future seeing\" cache";
 
-std::mt19937_64 rnd(228);
+std::mt19937_64 rnd(229);
 
 int GetIntDice(int low, int high) {
   return std::uniform_int_distribution<int>(low, high)(rnd);
