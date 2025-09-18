@@ -68,6 +68,7 @@ static void Input(
 
 int main() {
   setLoggingLevel(DEBUG);
+  LOG_DEBUG("Hello world!");
 
   size_t max_cache_size = 0;
   size_t num_of_queries = 0;
@@ -76,8 +77,8 @@ int main() {
 
   std::vector<size_t> requests(num_of_queries);
   for (auto& it : requests) {
-    // it = SafelyReadPositiveInt("Input page index: ", MAX_PAGE_INDEX);
-    std::cin >> it;
+    it = SafelyReadPositiveInt("Input page index: ", MAX_PAGE_INDEX);
+    //std::cin >> it;
   }
   //cache_t<page_t, size_t> cache(max_cache_size);
   lru2q_cache_t<page_t, size_t> cache(max_cache_size);
@@ -87,12 +88,6 @@ int main() {
   for (size_t _ = 0; _ < num_of_queries; ++_) {
     page_t page;
     page.index = requests[_];
-    // page.index = SafelyReadPositiveInt("Input page index: ", MAX_PAGE_INDEX);
-    // size_t page_index;
-    // std::cin >> page_index;
-    // page.set_page_index(page_index);
-
-    // assert(std::cin.good());
     LOG_ERROR("-----------------");
     LOG_DEBUG_VARS(page.index);
     if (cache.lookup_update(page, page.index, slow_get_page)) {

@@ -12,7 +12,8 @@ add_executable(check_cache_eff
     test_lru2q_cache_eff.cpp
 )
 
-set(CMAKE_CXX_FLAGS  "-D NO_LOG -D TESTS_ ${CMAKE_CXX_FLAGS}")
+target_compile_options(run_tests       PRIVATE -DNO_LOG -DTESTS_)
+target_compile_options(check_cache_eff PRIVATE -DTESTS_)
 set_target_properties(run_tests       PROPERTIES RUNTIME_OUTPUT_DIRECTORY "${BUILD_DIR_PATH}")
 set_target_properties(check_cache_eff PROPERTIES RUNTIME_OUTPUT_DIRECTORY "${BUILD_DIR_PATH}")
 

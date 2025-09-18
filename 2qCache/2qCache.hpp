@@ -14,7 +14,7 @@ template <typename T, typename KeyT = int>
 class lru2q_cache_t {
  private:
   // = new_pages_capacity / hot_pages_capacity
-  static constexpr double NEW_ELEMS_CAPACITY_RATIOS = 0.25;
+  static constexpr double NEW_ELEMS_CAPACITY_RATIOS = 0.2;
   const size_t max_cache_sz_ = 0;
   const size_t new_elems_cap_;
   const size_t hot_elems_cap_;
@@ -31,11 +31,7 @@ class lru2q_cache_t {
       : max_cache_sz_(max_cache_sz),
       new_elems_cap_(static_cast<size_t>(NEW_ELEMS_CAPACITY_RATIOS * 
                                          static_cast<double>(max_cache_sz))),
-      hot_elems_cap_(max_cache_sz - new_elems_cap_)
-  {
-    setLoggingLevel(DEBUG);
-    LOG_DEBUG_VARS(new_elems_cap_, hot_elems_cap_);
-  }
+      hot_elems_cap_(max_cache_sz - new_elems_cap_) {};
 
   bool is_new_elems_full() const {
     return new_elems_list_.size() >= new_elems_cap_;

@@ -1,11 +1,10 @@
 #include <gtest/gtest.h>
 
+#include "tests_configs/proph_cache.hpp"
 #include "tests_structs.hpp"
 #include "../prophecyCache/include/prophecyCache.hpp"
 
-using queries_list_t = std::vector<std::pair<bool, size_t>>;
-
-static std::vector<size_t> GetRequestsFromQueries(const queries_list_t& queries) {
+static std::vector<size_t> GetRequestsFromQueries(test_queries_t& queries) {
   std::vector<size_t> reqs = {};
   reqs.reserve(queries.size());
   for (auto& [_, ind] : queries) {
@@ -15,45 +14,31 @@ static std::vector<size_t> GetRequestsFromQueries(const queries_list_t& queries)
   return reqs;
 }
 
-TEST(CacheTest, TestFromPresentationProphCache) {
-  page_t page; // we are not using it here
-  std::vector<std::pair<bool, size_t>> queries = {
-    {false, 1},
-    {false, 2},
-    {false, 3},
-    {false, 4},
-    {true,  1},
-    {true,  2},
-    {false, 5},
-    {true,  1},
-    {true,  2},
-    {true,  4},
-    {true,  3},
-    {true,  4}
-  };
-  prophecy_cache_t<page_t, size_t> cache(4, GetRequestsFromQueries(queries));
-  
-  for (auto [is_hit, index] : queries) {
-    EXPECT_EQ(cache.lookup_update(page, index, slow_get_page), is_hit);
-  }
-}
+/*
 
-TEST(CacheTest, CacheSize1ProphCache) {
-  page_t page; // we are not using it here
-  std::vector<std::pair<bool, size_t>> queries = {
-    {false, 1},
-    {false, 2},
-    {false, 3},
-    {true,  1},
-    {false, 2},
-    {false, 3},
-    {true,  3},
-    {true,  3},
-    {false, 1}
-  };
-  prophecy_cache_t<page_t, size_t> cache(1, GetRequestsFromQueries(queries));
+Please don't beat for using code gen, I've wanted each test to have it's own name
+for easier debugging after test fail and parametrized test doesn't allow this,
+even so it would be handy to simply write single TEST_P and iterate through
+all test configurations
 
-  for (auto [is_hit, index] : queries) {
-    EXPECT_EQ(cache.lookup_update(page, index, slow_get_page), is_hit);
+*/
+#define ADD_PROPH_CACHE_TEST_CASE(testName)                                   \
+  TEST(CacheTest, testName##ProphCase) {                                     \
+    page_t page;                                                             \
+    test_queries_t queries = prophecy_cache_tests::testName.queries;         \
+    prophecy_cache_t<page_t, size_t> cache(                                  \
+      prophecy_cache_tests::testName.cache_size,                             \
+      GetRequestsFromQueries(queries)                                        \
+    );                                                                       \
+    for (auto [is_hit, index] : queries) {                                   \
+      EXPECT_EQ(cache.lookup_update(page, index, slow_get_page), is_hit);    \
+    }                                                                        \
   }
-}
+
+ADD_PROPH_CACHE_TEST_CASE(fromPresentation)
+ADD_PROPH_CACHE_TEST_CASE(cacheSize1)
+ADD_PROPH_CACHE_TEST_CASE(period3_cap3)
+ADD_PROPH_CACHE_TEST_CASE(period3_cap2)
+ADD_PROPH_CACHE_TEST_CASE(reverse)
+
+#undef ADD_PROPH_CACHE_TEST_CASE

@@ -41,6 +41,7 @@ class prophecy_cache_t {
  public:
   prophecy_cache_t(size_t max_cache_sz, const std::vector<KeyT>& requests)
       : max_cache_sz_(max_cache_sz) {
+    assert(max_cache_sz >= 1);
     for (int i = (int)requests.size(); i >= 0; --i) {
       KeyT ind = requests[(size_t)i];
       positions[ind].push((size_t)i);
