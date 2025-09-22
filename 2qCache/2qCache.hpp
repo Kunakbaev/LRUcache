@@ -14,7 +14,7 @@ template <typename T, typename KeyT = int>
 class lru2q_cache_t {
  private:
   // = new_pages_capacity / hot_pages_capacity
-  static constexpr double NEW_ELEMS_CAPACITY_RATIOS = 0.2;
+  static constexpr double NEW_ELEMS_CAPACITY_RATIOS = 0.4;
   const size_t max_cache_sz_ = 0;
   const size_t new_elems_cap_;
   const size_t hot_elems_cap_;
@@ -42,17 +42,6 @@ class lru2q_cache_t {
   }
 
   bool isCacheHit(T& element, KeyT key) {
-    // std::cout << "key : " << key << " hot elems pos : ";
-    // for (auto [ind, _] : hot_elems_pos_) {
-    //   std::cout << ind << " ";
-    // }
-    // std::cout << std::endl;
-    // std::cout << "new elems pos : ";
-    // for (auto [ind, _] : new_elems_pos_) {
-    //   std::cout << ind << " ";
-    // }
-    // std::cout << std::endl;
-
     auto hit = hot_elems_pos_.find(key);
     if (hit != hot_elems_pos_.end()) {
       auto elem_it = hit->second;
@@ -102,27 +91,17 @@ class lru2q_cache_t {
   template <typename F>
   bool lookup_update(T& element, KeyT key, F slow_get_page) {
     if (isCacheHit(element, key)) {
-      // LOG_WARNING("HIT");
       return true;
     }
-
-    // LOG_WARNING("MISS");
 
     assert(new_elems_list_.size() == new_elems_pos_.size());
     if (is_new_elems_full() && !new_elems_list_.empty()) {
       // TODO: is it okay that I rely on structure of 
       // elements that I store?
-      // std::cout << "new elems list size : " << new_elems_list_.size() << std::endl;
       KeyT evicted_elem_key = new_elems_list_.front().index;
-      // std::cout << "evicted : " << evicted_elem_key << std::endl;
       new_elems_list_.pop_front();
       ghost_keys_buff_.insert(evicted_elem_key);
       new_elems_pos_.erase(evicted_elem_key);
-      // std::cout << "1after new elems pos : ";
-      // for (auto [ind, _] : new_elems_pos_) {
-      //   std::cout << ind << " ";
-      // }
-      // std::cout << std::endl;
     }
 
     slow_get_page(key, element);
@@ -134,11 +113,6 @@ class lru2q_cache_t {
     } else {
       new_elems_list_.push_back(element);
       new_elems_pos_[key] = --new_elems_list_.end();
-      // std::cout << "2after new elems pos : ";
-      // for (auto [ind, _] : new_elems_pos_) {
-      //   std::cout << ind << " ";
-      // }
-      // std::cout << std::endl;
       return false;
     }
   }
