@@ -25,8 +25,10 @@ const size_t TOT_NUM_OF_PAGES = sizeof(all_pages) / sizeof(*all_pages);
 void slow_get_page(std::size_t search_index, page_t& page) {
 #ifndef TESTS_
 #ifndef PERF_TEST_
+#ifndef DONT_WANT_SLOW_GET_PAGE_
   std::cerr << "Your page is loading..." << std::endl;
   std::this_thread::sleep_for(TIMESPAN);
+#endif
 #endif
 #endif
 

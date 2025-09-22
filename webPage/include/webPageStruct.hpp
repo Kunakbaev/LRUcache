@@ -3,7 +3,7 @@
 #include <iostream>
 #include <string>
 
-const size_t MAX_PAGE_INDEX = 1000;
+const size_t MAX_PAGE_INDEX = 1024;
 
 // class page_hasher_t;
 

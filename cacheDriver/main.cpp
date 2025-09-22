@@ -10,8 +10,8 @@
 static const char* const STR_NOT_NUM_ERR_MSG        = "Error: input string must be a positive integer...";
 static const char* const NUM_IS_TOO_BIG_ERR_MSG     = "Error: input number is too big...";
 static const char* const INVALID_NUM_FORMAT_ERR_MSG = "Invalid input format, it's either not a number or it's bigger than ";
-static const size_t MAX_CACHE_SIZE                  = 8;
-static const size_t MAX_NUM_OF_QUERIES              = 20;
+static const size_t MAX_CACHE_SIZE                  = 30;
+static const size_t MAX_NUM_OF_QUERIES              = 1024;
 
 // returns 
 static bool try2readPositiveInt(
@@ -80,9 +80,24 @@ int main() {
     it = SafelyReadPositiveInt("Input page index: ", MAX_PAGE_INDEX);
     //std::cin >> it;
   }
-  //cache_t<page_t, size_t> cache(max_cache_size);
+
+  // MEGA CRINGE:
+  bool anyCacheCreated = false;
+#ifdef RUN_LRU_CACHE_
+  anyCacheCreated = true;
+  cache_t<page_t, size_t> cache(max_cache_size);
+#endif
+#ifdef RUN_2Q_CACHE_
+  anyCacheCreated = true;
   lru2q_cache_t<page_t, size_t> cache(max_cache_size);
-  //prophecy_cache_t<page_t, size_t> cache(max_cache_size, requests);
+#endif
+#ifdef RUN_PROPHECY_CACHE_
+  anyCacheCreated = true;
+  prophecy_cache_t<page_t, size_t> cache(max_cache_size, requests);
+#endif
+  if (!anyCacheCreated) {
+    LOG_ERROR("Error: invalid debug option for target, no cache type was chosen...\n");
+  }
 
   size_t hits = 0;
   for (size_t _ = 0; _ < num_of_queries; ++_) {
