@@ -4,11 +4,9 @@
 #include <set>
 #include <stack>
 #include <vector>
-// #include <list>
-// #include <unordered_map>
 
-#include "../../3dPartyModules/LoggerLib/include/logLib.hpp"
-#include "../../webPage/include/webPageStruct.hpp"
+#include "logLib.hpp"
+#include "webPageStruct.hpp"
 
 template <typename T>
 struct set_comparator_t
@@ -17,7 +15,6 @@ struct set_comparator_t
     const std::pair<size_t, T>& one,
     const std::pair<size_t, T>& two
   ) const {
-    // LOG_DEBUG_VARS(one.first, two.first, "compare");
     return one.first < two.first;
   }
 };
@@ -27,16 +24,11 @@ class prophecy_cache_t {
  private:
   const size_t max_cache_sz_ = 0;
 
-  // std::list<T> cache_ = {};
-  // using ListIt = typename std::list<T>::iterator;
-  // std::unordered_map<KeyT, ListIt> hash_ = {};
-
   // for each number from requests array we store list of its positions
   std::map<KeyT, std::stack<size_t>> positions = {};
   // .first  = position of index in requests arrays
   // .second = page structure
   std::set<std::pair<size_t, T>, set_comparator_t<T>> cache_ = {};
-  //const std::vector<KeyT>& requests_;
 
  public:
   prophecy_cache_t(size_t max_cache_sz, const std::vector<KeyT>& requests)
@@ -46,11 +38,6 @@ class prophecy_cache_t {
       KeyT ind = requests[(size_t)i];
       positions[ind].push((size_t)i);
     }
-
-    // for (auto& [ind, arr] : positions) {
-    //   //cache.insert(std::make_pair(arr.top(), ind));
-    //   //arr.push(arr.top());
-    // }
   }
 
   bool is_full() const {
@@ -69,19 +56,15 @@ class prophecy_cache_t {
     }
 
     page_t _;
-    // LOG_DEBUG_VARS(ind, cur_pos);
     auto hit = cache_.find(std::make_pair(cur_pos, _));
     if (hit != cache_.end()) { // index found, it's a cache hit
       element = hit->second;
-      // LOG_DEBUG_VARS(hit->first);
-      // LOG_WARNING("HIT");
 
       // we need to update set elem, as ind of nxt occur has changed
       cache_.erase(hit);
       cache_.insert(std::make_pair(nxt_pos, element));
       return true;
     }
-    // LOG_WARNING("MISS");
 
     // cache miss
     slow_get_page(ind, element);
@@ -98,6 +81,7 @@ class prophecy_cache_t {
     return false;
   }
 
+// Is this really bad? On lecture there was same example but with class field
 #ifdef _DEBUG
   void dump_cache() const {
     LOG_DEBUG("Cache dump:");

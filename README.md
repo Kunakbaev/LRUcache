@@ -32,15 +32,65 @@ Brief cache types description:
 
 ### 4.1 How to run?
 
-First, you need to install submodules, as I've used my custom logger lib for debug purposes. For that perform following commands:
+Everything is very simple, you just need to run one script, that will install **myLogLib** submodule, create **bin** directory for *cmake* and show help message (with all targets available).
 
 ```bash
-$ cd 3dPartyModules/LoggerLib
-$ git submodule update
-$ make install
+$ ./init_repo.sh
 ```
 
-**make install** will ask for sudo, it doesn't do anything bad for your device, it simply moves dynamic library (.so file) with logger functions to needed directory.
+<details>
+<summary>init_repo.sh script</summary>
+
+```bash
+#! /bin/bash
+
+# ---------------------   PREPARING LOG LIB   -----------------------
+
+set -e
+
+echo "Repository initialization script"
+
+# Проверяем что мы в git репозитории
+if [ ! -d ".git" ]; then
+  echo "Error: This is not a git repository"
+  exit 1
+fi
+
+echo "Loading logger lib submodule..."
+
+git submodule init
+git submodule update
+
+# Проверяем что нужный подмодуль загрузился
+if [ -d "3dPartyModules/LoggerLib" ]; then
+  echo "✓ LoggerLib submodule initialized successfully"
+else
+  echo "✗ LoggerLib submodule failed to initialize"
+  exit 1
+fi
+
+echo "LoggerLib submodule ready!"
+
+# ---------------------   PREPARING CMAKE   -----------------------
+
+echo "Preparing cmake..."
+
+mkdir -p bin # no error if it exists
+cd bin
+cmake ..
+cd ..
+cmake --build bin --target show_help_msg
+
+
+```
+
+</details>
+
+Maybe you will need to make it executable:
+
+```
+$ chmod +x ./init_repo.sh
+```
 
 ### 4.2 Dirs
 

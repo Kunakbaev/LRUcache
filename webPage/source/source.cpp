@@ -33,13 +33,10 @@ void slow_get_page(std::size_t search_index, page_t& page) {
 #endif
 
   page.index = search_index;
+  // some page search logic
   // for (auto tmp : all_pages) {
   //   if (tmp.index == search_index) {
   //     page = tmp;
   //   }
-  // }
-
-  // for (size_t page_ind = 0; page_ind < all_pages; ++page_ind) {
-  //   if (all_pages[page_ind])
   // }
 }

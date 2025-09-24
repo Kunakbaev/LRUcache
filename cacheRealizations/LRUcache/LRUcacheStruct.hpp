@@ -3,8 +3,8 @@
 #include <list>
 #include <unordered_map>
 
-#include "../../3dPartyModules/LoggerLib/include/logLib.hpp"
-#include "../../webPage/include/webPageStruct.hpp"
+#include "logLib.hpp"
+#include "webPageStruct.hpp"
 
 template <typename T, typename KeyT = int>
 class cache_t {

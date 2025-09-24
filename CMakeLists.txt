@@ -50,7 +50,8 @@ set(my_loglib_DIR "${CMAKE_CURRENT_BINARY_DIR}")
 
 # 3. Добавляем subdirectory
 add_subdirectory(3dPartyModules/LoggerLib)
-
+include_directories("3dPartyModules/LoggerLib/include/logLib.hpp")
+include_directories("webPage/include/webPageStruct.hpp")
 
 
 
