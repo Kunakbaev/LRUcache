@@ -17,14 +17,12 @@ target_compile_options(check_cache_eff PRIVATE -DTESTS_)
 set_target_properties(run_tests       PROPERTIES RUNTIME_OUTPUT_DIRECTORY "${BUILD_DIR_PATH}")
 set_target_properties(check_cache_eff PROPERTIES RUNTIME_OUTPUT_DIRECTORY "${BUILD_DIR_PATH}")
 
-find_library(MY_LOG_LIB ${MY_LOG_LIB_NAME})
-
 target_link_libraries(run_tests
     GTest::gtest
     GTest::gtest_main
-    ${MY_LOG_LIB}
+    my_loglib
 )
 
-target_link_libraries(check_cache_eff PRIVATE ${MY_LOG_LIB})
+target_link_libraries(check_cache_eff PRIVATE my_loglib)
 
 add_test(NAME RunAllTests COMMAND run_tests)

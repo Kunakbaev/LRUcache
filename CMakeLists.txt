@@ -19,7 +19,6 @@ set(COMMON_CXX_FLAGS "-lm -ggdb3 -std=c++17 -Werror -Wall -Wextra -Weffc++ -Wagg
 
 set(BUILD_DIR_PATH    "${CMAKE_BINARY_DIR}")
 set(WEB_PAGE_DIR_PATH "webPage/source/")
-set(MY_LOG_LIB_NAME   "my_loglib")
 
 if(CMAKE_BUILD_TYPE STREQUAL "Release")
   # removes assert checks and log lib output
@@ -29,6 +28,57 @@ elseif(CMAKE_BUILD_TYPE STREQUAL "Debug")
   add_compile_options(-g -O0 -D_DEBUG)
   message(STATUS "Building in Debug mode")
 endif()
+
+
+
+
+
+
+
+
+
+# 1. Сначала генерируем config файл
+include(CMakePackageConfigHelpers)
+configure_package_config_file(
+    3dPartyModules/LoggerLib/cmake/my_loglibConfig.cmake.in
+    ${CMAKE_CURRENT_BINARY_DIR}/my_loglibTargets.cmake
+    INSTALL_DESTINATION lib/cmake/my_loglib
+)
+
+# 2. Указываем КОНКРЕТНЫЙ путь к файлу
+set(my_loglib_DIR "${CMAKE_CURRENT_BINARY_DIR}")
+
+# 3. Добавляем subdirectory
+add_subdirectory(3dPartyModules/LoggerLib)
+
+
+
+
+
+
+
+
+# add_custom_target(install_loger_local
+#   COMMAND ${CMAKE_MAKE_PROGRAM} install DESTDIR=${CMAKE_BINARY_DIR}/local_install -C ${CMAKE_CURRENT_SOURCE_DIR}
+# )
+
+file(GENERATE OUTPUT ${CMAKE_CURRENT_BINARY_DIR}/help_message.txt CONTENT "
+Available targets:
+  * lru_cache       -> run page requests queries on lru cache
+  * 2q_cache        -> run page requests queries on 2q cache
+  * prophecy_cache  -> run page requests queries on prophecy cache
+  * run_tests       -> check correctness of each cache type by running google tests
+  * test_perf       -> same as first 3 targets, but only for 2q cache and without any additional input prompts
+  * check_cache_eff -> compare hit performance of 3 cache types: lru, 2q and prophecy, show hit performance table
+
+  usage examples:
+    * to set build type: cmake -S . -B bin -DCMAKE_BUILD_TYPE=Debug
+    * to run lru_cache target: cmake --build bin --target lru_cache
+")
+
+add_custom_target(show_help_msg
+  COMMAND ${CMAKE_COMMAND} -E cat ${CMAKE_CURRENT_BINARY_DIR}/help_message.txt
+)
 
 add_subdirectory(cacheDriver)
 add_subdirectory(tests)

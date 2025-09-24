@@ -27,7 +27,7 @@ target_compile_options(lru_cache      PRIVATE -DDONT_WANT_SLOW_GET_PAGE_ -DRUN_L
 target_compile_options(2q_cache       PRIVATE -DDONT_WANT_SLOW_GET_PAGE_ -DRUN_2Q_CACHE_)
 target_compile_options(prophecy_cache PRIVATE -DDONT_WANT_SLOW_GET_PAGE_ -DRUN_PROPHECY_CACHE_)
 
-find_library(MY_LOG_LIB ${MY_LOG_LIB_NAME})
-target_link_libraries(lru_cache      PRIVATE ${MY_LOG_LIB})
-target_link_libraries(2q_cache       PRIVATE ${MY_LOG_LIB})
-target_link_libraries(prophecy_cache PRIVATE ${MY_LOG_LIB})
+# find_library(MY_LOG_LIB ${MY_LOG_LIB_NAME})
+target_link_libraries(lru_cache      PRIVATE my_loglib)
+target_link_libraries(2q_cache       PRIVATE my_loglib)
+target_link_libraries(prophecy_cache PRIVATE my_loglib)
