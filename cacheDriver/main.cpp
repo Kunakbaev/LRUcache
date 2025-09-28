@@ -13,6 +13,7 @@ namespace err_msgs {
   inline const char* const INVALID_NUM_FORMAT_ERR_MSG = "Invalid input format, it's either not a number or it's bigger than ";
 };
 
+#ifndef TEST_PERF_
 namespace input_specs {
   inline const size_t MAX_CACHE_SIZE                  = 30;
   inline const size_t MAX_NUM_OF_QUERIES              = 1024;
@@ -67,6 +68,7 @@ static void Input(
   max_cache_size = SafelyReadPositiveInt("Max cache size: ", input_specs::MAX_CACHE_SIZE);
   num_of_queries = SafelyReadPositiveInt("Num of queries: ", input_specs::MAX_NUM_OF_QUERIES);
 }
+#endif
 
 int main() {
   setLoggingLevel(DEBUG);
@@ -74,12 +76,20 @@ int main() {
 
   size_t max_cache_size = 0;
   size_t num_of_queries = 0;
+#ifndef TEST_PERF_
   Input(max_cache_size, num_of_queries);
+#else
+  std::cin >> max_cache_size >> num_of_queries;
+#endif
   LOG_DEBUG_VARS(max_cache_size, num_of_queries);
 
   std::vector<size_t> requests(num_of_queries);
   for (auto& it : requests) {
+#ifndef TEST_PERF_
     it = SafelyReadPositiveInt("Input page index: ", MAX_PAGE_INDEX);
+#else
+    std::cin >> it;
+#endif
   }
 
   // MEGA CRINGE:
@@ -116,9 +126,13 @@ int main() {
 #endif
   }
 
+#ifndef TEST_PERF_
   double percent = static_cast<double>(hits) / static_cast<double>(num_of_queries);     
   std::cout << "Cache hits : " << hits << " percentage of hits : "
     << percent << std::endl;
+#else
+  std::cout << hits << std::endl;
+#endif
 
   return 0;
 }

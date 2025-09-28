@@ -72,6 +72,7 @@ Available targets:
   * lru_cache       -> run page requests queries on lru cache
   * 2q_cache        -> run page requests queries on 2q cache
   * prophecy_cache  -> run page requests queries on prophecy cache
+  * test_perf_lru_cache, test_perf_2q_cache, test_perf_prophecy_cache -> same targets as 3 previous ones, but without any additional input prompts or message
   * run_tests       -> check correctness of each cache type by running google tests
   * test_perf       -> same as first 3 targets, but only for 2q cache and without any additional input prompts
   * check_cache_eff -> compare hit performance of 3 cache types: lru, 2q and prophecy, show hit performance table
