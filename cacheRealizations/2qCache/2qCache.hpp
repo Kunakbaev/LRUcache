@@ -119,17 +119,17 @@ class lru2q_cache_t {
 
 #ifdef _DEBUG
   void dump_cache() const {
-    std::cout << "-----------------------\n2qcache: " << std::endl;
+    std::cout << "-----------------------\n2qcache: " << std::"\n";
     std::cout << "hot elems: ";
     for (auto& it : hot_elems_list_) {
       std::cout << it.index << " ";
     }
-    std::cout << std::endl;
+    std::cout << std::"\n";
     std::cout << "new elems: ";
     for (auto& it : new_elems_list_) {
       std::cout << it.index << " ";
     }
-    std::cout << std::endl;
+    std::cout << std::"\n";
     std::cout << "ghost keys: ";
     for (auto& it : ghost_keys_buff_) {
       std::cout << it << " ";

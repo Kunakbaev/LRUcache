@@ -2,7 +2,7 @@
 
 #include "tests_configs/proph_cache.hpp"
 #include "tests_structs.hpp"
-#include "../prophecyCache/include/prophecyCache.hpp"
+#include "prophecyCache.hpp"
 
 static std::vector<size_t> GetRequestsFromQueries(test_queries_t& queries) {
   std::vector<size_t> reqs = {};
@@ -16,9 +16,9 @@ static std::vector<size_t> GetRequestsFromQueries(test_queries_t& queries) {
 
 /*
 
-Please don't beat for using code gen, I've wanted each test to have it's own name
+Please don't beat me for using code gen, I've wanted each test to have it's own name
 for easier debugging after test fail and parametrized test doesn't allow this,
-even so it would be handy to simply write single TEST_P and iterate through
+even though it would be handy to simply write single TEST_P and iterate through
 all test configurations
 
 */

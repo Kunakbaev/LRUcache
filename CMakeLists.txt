@@ -25,6 +25,7 @@ if(CMAKE_BUILD_TYPE STREQUAL "Release")
   add_compile_options(-Ofast -DNDEBUG -DNO_LOG)
   message(STATUS "Building in Release mode")
 elseif(CMAKE_BUILD_TYPE STREQUAL "Debug")
+  add_compile_options(${COMMON_CXX_FLAGS})
   add_compile_options(-g -O0 -D_DEBUG)
   message(STATUS "Building in Debug mode")
 endif()
@@ -50,9 +51,12 @@ set(my_loglib_DIR "${CMAKE_CURRENT_BINARY_DIR}")
 
 # 3. Добавляем subdirectory
 add_subdirectory(3dPartyModules/LoggerLib)
-include_directories("3dPartyModules/LoggerLib/include/logLib.hpp")
-include_directories("webPage/include/webPageStruct.hpp")
 
+include_directories(3dPartyModules/LoggerLib/include/)
+include_directories(webPage/include/)
+include_directories(cacheRealizations/LRUcache/)
+include_directories(cacheRealizations/2qCache/)
+include_directories(cacheRealizations/prophecyCache/)
 
 
 
@@ -72,9 +76,9 @@ Available targets:
   * test_perf       -> same as first 3 targets, but only for 2q cache and without any additional input prompts
   * check_cache_eff -> compare hit performance of 3 cache types: lru, 2q and prophecy, show hit performance table
 
-  usage examples:
-    * to set build type: cmake -S . -B bin -DCMAKE_BUILD_TYPE=Debug
-    * to run lru_cache target: cmake --build bin --target lru_cache
+usage examples:
+  * to set build type:       cmake -S . -B bin -DCMAKE_BUILD_TYPE=Debug
+  * to run lru_cache target: cmake --build bin --target lru_cache
 ")
 
 add_custom_target(show_help_msg

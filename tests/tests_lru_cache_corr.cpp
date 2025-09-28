@@ -2,7 +2,7 @@
 
 #include "tests_configs/lru_cache.hpp"
 #include "tests_structs.hpp"
-#include "../LRUcache/include/LRUcacheStruct.hpp"
+#include "LRUcache.hpp"
 
 #define ADD_LRU_CACHE_TEST_CASE(testName)                                   \
   TEST(CacheTest, testName##TestFromPresentationLRUcache) {                 \

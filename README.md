@@ -26,7 +26,7 @@ How penalty (or score) is counted: when need index from query is not presented i
 Brief cache types description:
 * [**LRU cache**](https://en.wikipedia.org/wiki/Cache_replacement_policies#Least_Recently_Used_(LRU)) - one of the most simple and straight forward strategies. If new page is present we simply return it's content. Otherwise, if there's still place in cache we can simply add new page. If that's not the case, then we evict (remove) page that has not been used for the longest time. I.e. we simply store linked list of pages, ones at the head (front) are most frequently used, if we use some page, than we move it to the front.
 * [**Prophecy cache**](https://en.wikipedia.org/wiki/Cache_replacement_policies#B%C3%A9l%C3%A1dy's_algorithm) - as we can see all queries at once, we can come up with a very efficient (in terms of hit rate) algorithm. Each time we want to add new page and cache is full, we will simply remove page with the highest next usage index (i.e. the one, that will be used later than all the others). In order to maintain structure, I've used set of pairs, first element is index of next use for page, and second is actual page content.
-* [**2q cache**](https://arpitbhayani.me/blogs/2q-cache/) - it's an improvement of standard LRU cache algorithm. It uses 3 queues, hot one (75% of cache capacity), new one (25% of capacity) and ghost one (it contains only indexes - meta information).
+* [**2q cache**](https://arpitbhayani.me/blogs/2q-cache/) - it's an improvement of standard LRU cache algorithm. It uses 3 queues, hot one (75% of cache capacity), new one (25% of capacity) and ghost one (it contains only indexes - meta information). Maybe you'll find interesting original [**paper**](https://www.vldb.org/conf/1994/P439.PDF).
 
 ## 4. Project structure
 
@@ -95,25 +95,21 @@ $ chmod +x ./init_repo.sh
 ### 4.2 Dirs
 
 ```bash
-$ tree -D -L 1
-[Sep 17 20:27]  .
-├── [Sep 15 16:27]  2qCache
-├── [Sep 13 12:55]  3dPartyModules
-├── [Sep 17 15:27]  bin
-├── [Sep 15 19:05]  cacheDriver
-├── [Sep 17 15:27]  CMakeLists.txt
-├── [Sep 13 12:59]  LRUcache
-├── [Sep 15 15:23]  prophecyCache
-├── [Sep 17 20:40]  README.md
-├── [Sep 15 19:04]  tests
-└── [Sep 14 19:46]  webPage
+$ tree -d -L 1
+.
+├── 3dPartyModules
+├── bin
+├── cacheDriver
+├── cacheRealizations
+├── tests
+└── webPage
 ```
 
-* **2qCache**, **LRUcache**, **prophecyCache** dirs contain realizations of corresponding cache types.
-* **tests** - contains tests of different kinds. There are scripts which use **gtests**, they check that each cache type works correctly. In addition, there are scripts that check how fast each implementation works - loaded performance of some sort. And finally, there's program that compares cache efficiencies of different caches. It requires prophecy cache to always have the biggest number of hits, as it's most optimal and can see all queries at once.
-* **cacheDriver** - there's a usecase of cache, this is simply an implementation of described task, I've used it for debug purposes and quick tests. For input it gets cache size and number of queries, then it reads indexes of pages.
+* **cacheRealizations** dir contains realizations of 3 cache types: LRU, 2q and "prophecy" (Belady algorithm) caches.
+* **tests** - contains tests of different kinds. There are scripts which use *gtests*, they check that each cache type works correctly. In addition, there are scripts that check how fast each implementation works - loaded performance of some sort. And finally, there's program that compares cache efficiencies of different caches. It requires prophecy cache to always have the biggest number of hits, as it's most optimal and can see all queries at once.
+* **cacheDriver** - there's a usecase of cache, this is simply an implementation of described task, I've used it for debug purposes and quick tests. For an input it expects to get cache size and number of queries, then it reads indexes of pages in stated quantity.
 * **3dpartyModules** - folder with my logger lib (I didn't use any other external modules).
-* **webPage** - structure of web page, it also contains function **slow_get_page** that behaves like we are loading some heavy data, so there's a simple **sleep(1)** statement in it.
+* **webPage** - structure of web page, it also contains function *slow_get_page* that behaves like we are loading some heavy data, so there's a simple *sleep(1)* statement in it.
 
 ## Final thoughts
 

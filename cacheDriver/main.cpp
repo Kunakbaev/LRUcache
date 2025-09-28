@@ -1,19 +1,23 @@
 #include <cassert>
 #include <iostream>
 
-#include "../3dPartyModules/LoggerLib/include/logLib.hpp"
-#include "../webPage/include/webPageStruct.hpp"
-#include "../LRUcache/include/LRUcacheStruct.hpp"
-#include "../prophecyCache/include/prophecyCache.hpp"
-#include "../2qCache/2qCache.hpp"
+#include "logLib.hpp"
+#include "webPageStruct.hpp"
+#include "LRUcache.hpp"
+#include "prophecyCache.hpp"
+#include "2qCache.hpp"
 
-static const char* const STR_NOT_NUM_ERR_MSG        = "Error: input string must be a positive integer...";
-static const char* const NUM_IS_TOO_BIG_ERR_MSG     = "Error: input number is too big...";
-static const char* const INVALID_NUM_FORMAT_ERR_MSG = "Invalid input format, it's either not a number or it's bigger than ";
-static const size_t MAX_CACHE_SIZE                  = 30;
-static const size_t MAX_NUM_OF_QUERIES              = 1024;
+namespace err_msgs {
+  inline const char* const STR_NOT_NUM_ERR_MSG        = "Error: input string must be a positive integer...";
+  inline const char* const NUM_IS_TOO_BIG_ERR_MSG     = "Error: input number is too big...";
+  inline const char* const INVALID_NUM_FORMAT_ERR_MSG = "Invalid input format, it's either not a number or it's bigger than ";
+};
 
-// returns 
+namespace input_specs {
+  inline const size_t MAX_CACHE_SIZE                  = 30;
+  inline const size_t MAX_NUM_OF_QUERIES              = 1024;
+};
+ 
 static bool try2readPositiveInt(
   size_t&      num,
   const size_t max_value
@@ -25,18 +29,16 @@ static bool try2readPositiveInt(
   const static size_t NUM_BASE = 10;
   for (auto digit : input) {
     if (!isdigit(digit)) {
-      LOG_ERROR(STR_NOT_NUM_ERR_MSG);
+      LOG_ERROR(err_msgs::STR_NOT_NUM_ERR_MSG);
       return false;
-      // assert(false && STR_NOT_NUM_ERR_MSG);
     }
 
     // TODO: overflow check
     num *= NUM_BASE;
     num += static_cast<size_t>(digit - '0');
     if (num > max_value) {
-      LOG_ERROR(NUM_IS_TOO_BIG_ERR_MSG);
+      LOG_ERROR(err_msgs::NUM_IS_TOO_BIG_ERR_MSG);
       return false;
-      // assert(false && NUM_IS_TOO_BIG_ERR_MSG);
     }
   }
 
@@ -50,7 +52,7 @@ static size_t SafelyReadPositiveInt(
   size_t num = 0;
   std::cout << inpPrompt;
   while (!try2readPositiveInt(num, max_value)) {
-    std::cout << INVALID_NUM_FORMAT_ERR_MSG
+    std::cout << err_msgs::INVALID_NUM_FORMAT_ERR_MSG
       << max_value << std::endl;
     std::cout << inpPrompt;
   };
@@ -62,8 +64,8 @@ static void Input(
   size_t& max_cache_size,
   size_t& num_of_queries)
 {
-  max_cache_size = SafelyReadPositiveInt("Max cache size: ", MAX_CACHE_SIZE);
-  num_of_queries = SafelyReadPositiveInt("Num of queries: ", MAX_NUM_OF_QUERIES);
+  max_cache_size = SafelyReadPositiveInt("Max cache size: ", input_specs::MAX_CACHE_SIZE);
+  num_of_queries = SafelyReadPositiveInt("Num of queries: ", input_specs::MAX_NUM_OF_QUERIES);
 }
 
 int main() {
@@ -78,7 +80,6 @@ int main() {
   std::vector<size_t> requests(num_of_queries);
   for (auto& it : requests) {
     it = SafelyReadPositiveInt("Input page index: ", MAX_PAGE_INDEX);
-    //std::cin >> it;
   }
 
   // MEGA CRINGE:
@@ -97,13 +98,14 @@ int main() {
 #endif
   if (!anyCacheCreated) {
     LOG_ERROR("Error: invalid debug option for target, no cache type was chosen...\n");
+    exit(0);
   }
 
   size_t hits = 0;
   for (size_t _ = 0; _ < num_of_queries; ++_) {
     page_t page;
     page.index = requests[_];
-    LOG_ERROR("-----------------");
+    LOG_DEBUG("-----------------");
     LOG_DEBUG_VARS(page.index);
     if (cache.lookup_update(page, page.index, slow_get_page)) {
       hits += 1;
@@ -123,7 +125,7 @@ int main() {
 
 /*
 
-tests from presentation:
+test from presentation:
 4
 12
 1

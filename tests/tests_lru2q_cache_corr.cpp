@@ -2,7 +2,7 @@
 
 #include "tests_configs/2q_cache.hpp"
 #include "tests_structs.hpp"
-#include "../2qCache/2qCache.hpp"
+#include "2qCache.hpp"
 
 using queries_list_t = std::vector<std::pair<bool, size_t>>;
 

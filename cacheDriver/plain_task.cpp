@@ -1,7 +1,7 @@
 #include <iostream>
 
-#include "../webPage/include/webPageStruct.hpp"
-#include "../2qCache/2qCache.hpp"
+#include "webPageStruct.hpp"
+#include "2qCache.hpp"
 
 int main() {
   size_t max_cache_size = 0;

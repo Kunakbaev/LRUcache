@@ -3,9 +3,9 @@
 #include <cmath>
 #include <iomanip>
 
-#include "../LRUcache/include/LRUcacheStruct.hpp"
-#include "../2qCache/2qCache.hpp"
-#include "../prophecyCache/include/prophecyCache.hpp"
+#include "LRUcache.hpp"
+#include "2qCache.hpp"
+#include "prophecyCache.hpp"
 
 namespace tests_specifications {
 
@@ -23,7 +23,22 @@ static_assert(ZIPF_ALPHA + 1e-6 < 1.0);
 
 };
 
-// static_assert(tests_specifications::);
+namespace err_msgs {
+  inline const char* const BETTER_THAN_BEST_ERR_MSG
+    = "Error: lru2q cache is better than most optimal, \"future seeing\" cache";
+};
+
+namespace my_random {
+  static std::mt19937_64 rnd(228);
+
+  static int GetIntDice(int low, int high) {
+    return std::uniform_int_distribution<int>(low, high)(rnd);
+  }
+
+  static double GetDoubleDice(double low, double high) {
+    return std::uniform_real_distribution<double>(low, high)(rnd);
+  }
+};
 
 struct one_test_result_t {
   std::size_t lru_hits;
@@ -34,19 +49,7 @@ struct one_test_result_t {
     : lru_hits(lru), lru2q_hits(lru2q), prophecy_hits(prophecy) {}
 };
 
-static const char* const BETTER_THAN_BEST_ERR_MSG = "Error: lru2q cache is better than most optimal, \"future seeing\" cache";
-
-std::mt19937_64 rnd(228);
-
-int GetIntDice(int low, int high) {
-  return std::uniform_int_distribution<int>(low, high)(rnd);
-}
-
-double GetDoubleDice(double low, double high) {
-  return std::uniform_real_distribution<double>(low, high)(rnd);
-}
-
-void PrecountZipfProbs(
+static void PrecountZipfProbs(
   std::vector<double>& pref_zipf_probs,
   std::size_t          num_of_pages
 ) {
@@ -57,7 +60,7 @@ void PrecountZipfProbs(
   }
 }
 
-std::vector<size_t> GenRandomRequests(
+static std::vector<size_t> GenRandomRequests(
   size_t num_of_requests,
   size_t max_page_ind
 ) {
@@ -66,8 +69,8 @@ std::vector<size_t> GenRandomRequests(
 
   std::vector<size_t> requests(num_of_requests);
   for (auto& ind : requests) {
-    double tmp = GetDoubleDice(0.0, 1.0);
-    ind = std::lower_bound(pref_zipf_probs.begin(), 
+    double tmp = my_random::GetDoubleDice(0.0, 1.0);
+    ind = std::lower_bound(pref_zipf_probs.begin(),
                            pref_zipf_probs.end(), tmp) - pref_zipf_probs.begin() + 1;
   }
 
@@ -98,9 +101,9 @@ int main() {
   std::vector<size_t> requests = {};
   std::vector<one_test_result_t> test_results = {};
   for (size_t _ = 0; _ < tests_specifications::TOTAL_NUM_TESTS; ++_) {
-    size_t num_of_requests = static_cast<size_t>(GetIntDice(1, tests_specifications::MAX_NUM_OF_REQS));
-    size_t max_page_ind    = static_cast<size_t>(GetIntDice(1, tests_specifications::MAX_PAGE_INDEX2));
-    size_t max_cache_sz    = static_cast<size_t>(GetIntDice(3, tests_specifications::MAX_CACHE_SZ));
+    size_t num_of_requests = static_cast<size_t>(my_random::GetIntDice(1, tests_specifications::MAX_NUM_OF_REQS));
+    size_t max_page_ind    = static_cast<size_t>(my_random::GetIntDice(1, tests_specifications::MAX_PAGE_INDEX2));
+    size_t max_cache_sz    = static_cast<size_t>(my_random::GetIntDice(3, tests_specifications::MAX_CACHE_SZ));
     requests = GenRandomRequests(num_of_requests, max_page_ind);
 
     cache_t<page_t, size_t>            lru_cache(max_cache_sz);
@@ -115,16 +118,16 @@ int main() {
 
     lru2q_cache_wins += lru2q_hits >= lru_hits;
     if (lru2q_hits > proph_hits) { // error: smth went wrong
-      std::cout << BETTER_THAN_BEST_ERR_MSG << std::endl;
-      std::cout << "max cache size :" << max_cache_sz << std::endl;
-      std::cout << "num of requests:" << num_of_requests << std::endl;
+      std::cout << err_msgs::BETTER_THAN_BEST_ERR_MSG << "\n";
+      std::cout << "max cache size :" << max_cache_sz << "\n";
+      std::cout << "num of requests:" << num_of_requests << "\n";
       for (auto& it : requests) {
         std::cout << it << " ";
       }
-      std::cout << std::endl;
+      std::cout << "\n";
 
-      std::cout << "lru      hits : " << lru_hits   << std::endl;
-      std::cout << "lru2q    hits : " << lru2q_hits << std::endl;
+      std::cout << "lru      hits : " << lru_hits   << "\n";
+      std::cout << "lru2q    hits : " << lru2q_hits << "\n";
       std::cout << "prophecy hits : " << proph_hits << std::endl;
 
       break;
