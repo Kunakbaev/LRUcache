@@ -15,19 +15,19 @@ namespace err_msgs {
 
 #ifndef TEST_PERF_
 namespace input_specs {
-  inline const size_t MAX_CACHE_SIZE                  = 30;
-  inline const size_t MAX_NUM_OF_QUERIES              = 1024;
+  inline const std::size_t MAX_CACHE_SIZE                  = 30;
+  inline const std::size_t MAX_NUM_OF_QUERIES              = 1024;
 };
  
 static bool try2readPositiveInt(
   size_t&      num,
-  const size_t max_value
+  const std::size_t max_value
 ) {
   std::string input = "";
   std::cin >> input;
 
   num = 0;
-  const static size_t NUM_BASE = 10;
+  const static std::size_t NUM_BASE = 10;
   for (auto digit : input) {
     if (!isdigit(digit)) {
       LOG_ERROR(err_msgs::STR_NOT_NUM_ERR_MSG);
@@ -36,7 +36,7 @@ static bool try2readPositiveInt(
 
     // TODO: overflow check
     num *= NUM_BASE;
-    num += static_cast<size_t>(digit - '0');
+    num += static_cast<std::size_t>(digit - '0');
     if (num > max_value) {
       LOG_ERROR(err_msgs::NUM_IS_TOO_BIG_ERR_MSG);
       return false;
@@ -46,11 +46,11 @@ static bool try2readPositiveInt(
   return true;
 }
 
-static size_t SafelyReadPositiveInt(
+static std::size_t SafelyReadPositiveInt(
   const std::string& inpPrompt,
-  const size_t       max_value
+  const std::size_t       max_value
 ) {
-  size_t num = 0;
+  std::size_t num = 0;
   std::cout << inpPrompt;
   while (!try2readPositiveInt(num, max_value)) {
     std::cout << err_msgs::INVALID_NUM_FORMAT_ERR_MSG
@@ -62,8 +62,8 @@ static size_t SafelyReadPositiveInt(
 }
 
 static void Input(
-  size_t& max_cache_size,
-  size_t& num_of_queries)
+  std::size_t& max_cache_size,
+  std::size_t& num_of_queries)
 {
   max_cache_size = SafelyReadPositiveInt("Max cache size: ", input_specs::MAX_CACHE_SIZE);
   num_of_queries = SafelyReadPositiveInt("Num of queries: ", input_specs::MAX_NUM_OF_QUERIES);
@@ -74,8 +74,8 @@ int main() {
   setLoggingLevel(DEBUG);
   LOG_DEBUG("Hello world!");
 
-  size_t max_cache_size = 0;
-  size_t num_of_queries = 0;
+  std::size_t max_cache_size = 0;
+  std::size_t num_of_queries = 0;
 #ifndef TEST_PERF_
   Input(max_cache_size, num_of_queries);
 #else
@@ -83,7 +83,7 @@ int main() {
 #endif
   LOG_DEBUG_VARS(max_cache_size, num_of_queries);
 
-  std::vector<size_t> requests(num_of_queries);
+  std::vector<std::size_t> requests(num_of_queries);
   for (auto& it : requests) {
 #ifndef TEST_PERF_
     it = SafelyReadPositiveInt("Input page index: ", MAX_PAGE_INDEX);
@@ -96,23 +96,23 @@ int main() {
   bool anyCacheCreated = false;
 #ifdef RUN_LRU_CACHE_
   anyCacheCreated = true;
-  cache_t<page_t, size_t> cache(max_cache_size);
+  cache_t<page_t, std::size_t> cache(max_cache_size);
 #endif
 #ifdef RUN_2Q_CACHE_
   anyCacheCreated = true;
-  lru2q_cache_t<page_t, size_t> cache(max_cache_size);
+  lru2q_cache_t<page_t, std::size_t> cache(max_cache_size);
 #endif
 #ifdef RUN_PROPHECY_CACHE_
   anyCacheCreated = true;
-  prophecy_cache_t<page_t, size_t> cache(max_cache_size, requests);
+  prophecy_cache_t<page_t, std::size_t> cache(max_cache_size, requests);
 #endif
   if (!anyCacheCreated) {
     LOG_ERROR("Error: invalid debug option for target, no cache type was chosen...\n");
     exit(0);
   }
 
-  size_t hits = 0;
-  for (size_t _ = 0; _ < num_of_queries; ++_) {
+  std::size_t hits = 0;
+  for (std::size_t _ = 0; _ < num_of_queries; ++_) {
     page_t page;
     page.index = requests[_];
     LOG_DEBUG("-----------------");

@@ -12,8 +12,8 @@ template <typename T>
 struct set_comparator_t
 {
   bool operator()(
-    const std::pair<size_t, T>& one,
-    const std::pair<size_t, T>& two
+    const std::pair<std::size_t, T>& one,
+    const std::pair<std::size_t, T>& two
   ) const {
     return one.first < two.first;
   }
@@ -22,21 +22,21 @@ struct set_comparator_t
 template <typename T, typename KeyT = int>
 class prophecy_cache_t {
  private:
-  const size_t max_cache_sz_ = 0;
+  const std::size_t max_cache_sz_ = 0;
 
   // for each number from requests array we store list of its positions
-  std::map<KeyT, std::stack<size_t>> positions = {};
+  std::map<KeyT, std::stack<std::size_t>> positions = {};
   // .first  = position of index in requests arrays
   // .second = page structure
-  std::set<std::pair<size_t, T>, set_comparator_t<T>> cache_ = {};
+  std::set<std::pair<std::size_t, T>, set_comparator_t<T>> cache_ = {};
 
  public:
-  prophecy_cache_t(size_t max_cache_sz, const std::vector<KeyT>& requests)
+  prophecy_cache_t(std::size_t max_cache_sz, const std::vector<KeyT>& requests)
       : max_cache_sz_(max_cache_sz) {
     assert(max_cache_sz >= 1);
-    for (int i = (int)requests.size(); i >= 0; --i) {
-      KeyT ind = requests[(size_t)i];
-      positions[ind].push((size_t)i);
+    for (int i = static_cast<int>(requests.size()); i >= 0; --i) {
+      KeyT ind = requests[static_cast<std::size_t>(i)];
+      positions[ind].push(static_cast<std::size_t>(i));
     }
   }
 
@@ -48,9 +48,9 @@ class prophecy_cache_t {
   template <typename F>
   bool lookup_update(T& element, KeyT ind, F slow_get_page) {
     assert(!positions[ind].empty());
-    size_t cur_pos = positions[ind].top();
+    std::size_t cur_pos = positions[ind].top();
     positions[ind].pop();
-    size_t nxt_pos = (size_t)-1; // aka INF
+    std::size_t nxt_pos = static_cast<std::size_t>(-1); // aka INF
     if (!positions[ind].empty()) {
       nxt_pos = positions[ind].top();
     }

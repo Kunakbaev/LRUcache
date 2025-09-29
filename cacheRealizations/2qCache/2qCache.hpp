@@ -15,9 +15,9 @@ class lru2q_cache_t {
  private:
   // = new_pages_capacity / hot_pages_capacity
   static constexpr double NEW_ELEMS_CAPACITY_RATIOS = 0.4;
-  const size_t max_cache_sz_ = 0;
-  const size_t new_elems_cap_;
-  const size_t hot_elems_cap_;
+  const std::size_t max_cache_sz_ = 0;
+  const std::size_t new_elems_cap_;
+  const std::size_t hot_elems_cap_;
 
   using ListIt = typename std::list<T>::iterator;
   std::list<T> hot_elems_list_ = {};
@@ -27,10 +27,10 @@ class lru2q_cache_t {
   std::unordered_set<KeyT> ghost_keys_buff_ = {};
 
  public:
-  lru2q_cache_t(size_t max_cache_sz)
+  lru2q_cache_t(std::size_t max_cache_sz)
       : max_cache_sz_(max_cache_sz),
-      new_elems_cap_(static_cast<size_t>(NEW_ELEMS_CAPACITY_RATIOS * 
-                                         static_cast<double>(max_cache_sz))),
+      new_elems_cap_(static_cast<std::size_t>(NEW_ELEMS_CAPACITY_RATIOS * 
+                     static_cast<double>(max_cache_sz))),
       hot_elems_cap_(max_cache_sz - new_elems_cap_) {};
 
   bool is_new_elems_full() const {

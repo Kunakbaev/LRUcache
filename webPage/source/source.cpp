@@ -5,22 +5,26 @@
 
 #include "webPageStruct.hpp"
 
+namespace {  // anonymous namespace
+
 #ifdef _DEBUG
 // we don't want to spend a lot of time during debug
-static const size_t PAGE_LOAD_TIME = 1;
+const size_t PAGE_LOAD_TIME = 1;
 #else
-static const size_t PAGE_LOAD_TIME = 1000;
+const size_t PAGE_LOAD_TIME = 1000;
 #endif
 
 static const std::chrono::milliseconds TIMESPAN(PAGE_LOAD_TIME);
 
 // very big array of all pages on the internet
-static const page_t all_pages[] = {
+const page_t all_pages[] = {
   page_t(1024, "i am web page",  1),
   page_t(1024, "i am web page2", 2),
   page_t(1024, "i am web page2", 3)
 };
-static const size_t TOT_NUM_OF_PAGES = sizeof(all_pages) / sizeof(*all_pages);
+const size_t TOT_NUM_OF_PAGES = sizeof(all_pages) / sizeof(*all_pages);
+
+};
 
 void slow_get_page(std::size_t search_index, page_t& page) {
 #ifndef TESTS_

@@ -4,12 +4,12 @@
 #include "tests_structs.hpp"
 #include "2qCache.hpp"
 
-using queries_list_t = std::vector<std::pair<bool, size_t>>;
+using queries_list_t = std::vector<std::pair<bool, std::size_t>>;
 
 #define ADD_2Q_CACHE_TEST_CASE(testName)                                          \
   TEST(CacheTest, testName##Test2Qcache) {                                        \
     page_t page;                                                                  \
-    lru2q_cache_t<page_t, size_t> cache(lru2q_cache_tests::testName.cache_size);  \
+    lru2q_cache_t<page_t, std::size_t> cache(lru2q_cache_tests::testName.cache_size);  \
     for (auto [is_hit, index] : lru2q_cache_tests::testName.queries) {            \
       EXPECT_EQ(cache.lookup_update(page, index, slow_get_page), is_hit);         \
     }                                                                             \

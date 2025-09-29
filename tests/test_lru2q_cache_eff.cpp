@@ -9,11 +9,11 @@
 
 namespace tests_specifications {
 
-static constexpr size_t TOTAL_NUM_TESTS = 100;
-static constexpr size_t MAX_NUM_OF_REQS = 100;
-static constexpr size_t MAX_PAGE_INDEX2 = 1000;
-static constexpr size_t MAX_CACHE_SZ    = 200;
-static constexpr double ZIPF_ALPHA      = 0.8;
+inline constexpr size_t TOTAL_NUM_TESTS = 100;
+inline constexpr size_t MAX_NUM_OF_REQS = 100;
+inline constexpr size_t MAX_PAGE_INDEX2 = 1000;
+inline constexpr size_t MAX_CACHE_SZ    = 200;
+inline constexpr double ZIPF_ALPHA      = 0.8;
 
 // NOTE: this is not that crucial, but without this condition
 // tests won't show anything interesting
@@ -29,13 +29,13 @@ namespace err_msgs {
 };
 
 namespace my_random {
-  static std::mt19937_64 rnd(228);
+  inline std::mt19937_64 rnd(228);
 
-  static int GetIntDice(int low, int high) {
+  inline int GetIntDice(int low, int high) {
     return std::uniform_int_distribution<int>(low, high)(rnd);
   }
 
-  static double GetDoubleDice(double low, double high) {
+  inline double GetDoubleDice(double low, double high) {
     return std::uniform_real_distribution<double>(low, high)(rnd);
   }
 };
@@ -49,25 +49,28 @@ struct one_test_result_t {
     : lru_hits(lru), lru2q_hits(lru2q), prophecy_hits(prophecy) {}
 };
 
-static void PrecountZipfProbs(
+namespace {
+
+void PrecountZipfProbs(
   std::vector<double>& pref_zipf_probs,
   std::size_t          num_of_pages
 ) {
   pref_zipf_probs.resize(num_of_pages);
-  for (size_t i = 1; i <= num_of_pages; ++i) {
+  for (std::size_t i = 1; i <= num_of_pages; ++i) {
     pref_zipf_probs[i - 1] =
-      std::pow(static_cast<double>(i) / static_cast<double>(num_of_pages), tests_specifications::ZIPF_ALPHA);
+      std::pow(static_cast<double>(i) / static_cast<double>(num_of_pages),
+               tests_specifications::ZIPF_ALPHA);
   }
 }
 
-static std::vector<size_t> GenRandomRequests(
-  size_t num_of_requests,
-  size_t max_page_ind
+std::vector<std::size_t> GenRandomRequests(
+  std::size_t num_of_requests,
+  std::size_t max_page_ind
 ) {
   std::vector<double> pref_zipf_probs;
   PrecountZipfProbs(pref_zipf_probs, max_page_ind);
 
-  std::vector<size_t> requests(num_of_requests);
+  std::vector<std::size_t> requests(num_of_requests);
   for (auto& ind : requests) {
     double tmp = my_random::GetDoubleDice(0.0, 1.0);
     ind = std::lower_bound(pref_zipf_probs.begin(),
@@ -78,11 +81,11 @@ static std::vector<size_t> GenRandomRequests(
 }
 
 template<class T>
-static size_t GetNumOfHits4cache(
+std::size_t GetNumOfHits4cache(
   T& cache,
-  const std::vector<size_t>& requests
+  const std::vector<std::size_t>& requests
 ) {
-  size_t hits = 0;
+  std::size_t hits = 0;
   for (auto index : requests) {
     page_t page;
     page.index = index;
@@ -94,25 +97,27 @@ static size_t GetNumOfHits4cache(
   return hits;
 }
 
+}
+
 int main() {
   setLoggingLevel(DEBUG);
 
-  size_t lru2q_cache_wins = 0;
+  std::size_t lru2q_cache_wins = 0;
   std::vector<size_t> requests = {};
   std::vector<one_test_result_t> test_results = {};
-  for (size_t _ = 0; _ < tests_specifications::TOTAL_NUM_TESTS; ++_) {
-    size_t num_of_requests = static_cast<size_t>(my_random::GetIntDice(1, tests_specifications::MAX_NUM_OF_REQS));
-    size_t max_page_ind    = static_cast<size_t>(my_random::GetIntDice(1, tests_specifications::MAX_PAGE_INDEX2));
-    size_t max_cache_sz    = static_cast<size_t>(my_random::GetIntDice(3, tests_specifications::MAX_CACHE_SZ));
+  for (std::size_t _ = 0; _ < tests_specifications::TOTAL_NUM_TESTS; ++_) {
+    std::size_t num_of_requests = static_cast<std::size_t>(my_random::GetIntDice(1, tests_specifications::MAX_NUM_OF_REQS));
+    std::size_t max_page_ind    = static_cast<std::size_t>(my_random::GetIntDice(1, tests_specifications::MAX_PAGE_INDEX2));
+    std::size_t max_cache_sz    = static_cast<std::size_t>(my_random::GetIntDice(3, tests_specifications::MAX_CACHE_SZ));
     requests = GenRandomRequests(num_of_requests, max_page_ind);
 
-    cache_t<page_t, size_t>            lru_cache(max_cache_sz);
-    lru2q_cache_t<page_t, size_t>    lru2q_cache(max_cache_sz);
-    prophecy_cache_t<page_t, size_t> proph_cache(max_cache_sz, requests);
+    cache_t<page_t, std::size_t>            lru_cache(max_cache_sz);
+    lru2q_cache_t<page_t, std::size_t>    lru2q_cache(max_cache_sz);
+    prophecy_cache_t<page_t, std::size_t> proph_cache(max_cache_sz, requests);
 
-    size_t   lru_hits = GetNumOfHits4cache(lru_cache,   requests);
-    size_t lru2q_hits = GetNumOfHits4cache(lru2q_cache, requests);
-    size_t proph_hits = GetNumOfHits4cache(proph_cache, requests);
+    std::size_t   lru_hits = GetNumOfHits4cache(lru_cache,   requests);
+    std::size_t lru2q_hits = GetNumOfHits4cache(lru2q_cache, requests);
+    std::size_t proph_hits = GetNumOfHits4cache(proph_cache, requests);
 
     test_results.emplace_back(lru_hits, lru2q_hits, proph_hits);
 
