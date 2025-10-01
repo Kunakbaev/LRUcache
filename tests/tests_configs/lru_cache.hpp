@@ -4,6 +4,7 @@
 
 namespace lru_cache_tests {
   static const CacheTestConf fromPresentation = {
+    .test_name = "from_presentation",
     .cache_size = 4,
     .queries = {
       {false, 1},
@@ -22,6 +23,7 @@ namespace lru_cache_tests {
   };
 
   static const CacheTestConf cacheSize1 = {
+    .test_name = "cache_size_1",
     .cache_size = 1,
     .queries = {
       {false, 1},
@@ -37,6 +39,7 @@ namespace lru_cache_tests {
   };
 
   static const CacheTestConf cap3_1 = {
+    .test_name = "cap3_1",
     .cache_size = 3,
     .queries = {
       {false, 1},
@@ -52,6 +55,7 @@ namespace lru_cache_tests {
   };
 
   static const CacheTestConf cap3_2 = {
+    .test_name = "cap3_2",
     .cache_size = 3,
     .queries = {
       {false, 1},
@@ -71,6 +75,7 @@ namespace lru_cache_tests {
   };
 
   static const CacheTestConf all_fit_big_cap = {
+    .test_name = "all_fit_big_cap",
     .cache_size = 100,
     .queries = {
       {false, 1},
@@ -96,8 +101,8 @@ namespace lru_cache_tests {
       {false, 32},
       {false, 7},
       {false, 21},
-      {true, 92},
-      {true, 21}
+      {true,  92},
+      {true,  21}
     }
   };
 }

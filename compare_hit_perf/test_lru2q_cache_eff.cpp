@@ -97,6 +97,29 @@ std::size_t GetNumOfHits4cache(
   return hits;
 }
 
+void show_hit_perf_table(const std::vector<one_test_result_t>& test_results) {
+  std::cout << "Caches hit performance on tests:\n";
+  std::cout << std::left 
+            << std::setw(10) << "test id" << "|"
+            << std::setw(10) << "lru hits" << "|" 
+            << std::setw(10) << "2q hits" << "|"
+            << std::setw(10) << "lru delta" << "|"
+            << std::setw(10) << "2q delta" << "|"
+            << std::setw(15) << "prophecy hits" << "\n";
+
+  std::size_t test_ind = 1;
+  for (const auto& [lru_hits, lru2q_hits, prophecy_hits] : test_results) {
+      std::cout << std::left
+                << std::setw(10) << test_ind << "|"
+                << std::setw(10) << lru_hits << "|"
+                << std::setw(10) << lru2q_hits << "|"
+                << std::setw(10) << static_cast<int>(lru_hits - prophecy_hits) << "|"
+                << std::setw(10) << static_cast<int>(lru2q_hits - prophecy_hits) << "|"
+                << std::setw(15) << prophecy_hits << "\n";
+      ++test_ind;
+  }
+}
+
 }
 
 int main() {
@@ -144,26 +167,7 @@ int main() {
   int percent = static_cast<int>(std::ceil(ratio * 100));
   std::cout << "LRU2q cache is better than original LRU cache in " << percent << "% of cases" << std::endl;
 
-  std::cout << "Caches hit performance on tests:\n";
-  std::cout << std::left 
-            << std::setw(10) << "test id" << "|"
-            << std::setw(10) << "lru hits" << "|" 
-            << std::setw(10) << "2q hits" << "|"
-            << std::setw(10) << "lru delta" << "|"
-            << std::setw(10) << "2q delta" << "|"
-            << std::setw(15) << "prophecy hits" << "\n";
-
-  std::size_t test_ind = 1;
-  for (const auto& [lru_hits, lru2q_hits, prophecy_hits] : test_results) {
-      std::cout << std::left
-                << std::setw(10) << test_ind << "|"
-                << std::setw(10) << lru_hits << "|"
-                << std::setw(10) << lru2q_hits << "|"
-                << std::setw(10) << static_cast<int>(lru_hits - prophecy_hits) << "|"
-                << std::setw(10) << static_cast<int>(lru2q_hits - prophecy_hits) << "|"
-                << std::setw(15) << prophecy_hits << "\n";
-      ++test_ind;
-  }
+  show_hit_perf_table(test_results);
 
   return 0;
 }

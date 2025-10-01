@@ -26,13 +26,7 @@ class lru2q_cache_t {
   std::unordered_map<KeyT, ListIt> new_elems_pos_ = {};
   std::unordered_set<KeyT> ghost_keys_buff_ = {};
 
- public:
-  lru2q_cache_t(std::size_t max_cache_sz)
-      : max_cache_sz_(max_cache_sz),
-      new_elems_cap_(static_cast<std::size_t>(NEW_ELEMS_CAPACITY_RATIOS * 
-                     static_cast<double>(max_cache_sz))),
-      hot_elems_cap_(max_cache_sz - new_elems_cap_) {};
-
+ private:
   bool is_new_elems_full() const {
     return new_elems_list_.size() >= new_elems_cap_;
   }
@@ -41,7 +35,7 @@ class lru2q_cache_t {
     return hot_elems_list_.size() >= hot_elems_cap_;
   }
 
-  bool isCacheHit(T& element, KeyT key) {
+  bool is_cache_hit(T& element, KeyT key) {
     auto hit = hot_elems_pos_.find(key);
     if (hit != hot_elems_pos_.end()) {
       auto elem_it = hit->second;
@@ -87,10 +81,17 @@ class lru2q_cache_t {
     hot_elems_pos_[key] = hot_elems_list_.begin();
   }
 
+ public:
+  lru2q_cache_t(std::size_t max_cache_sz)
+      : max_cache_sz_(max_cache_sz),
+      new_elems_cap_(static_cast<std::size_t>(NEW_ELEMS_CAPACITY_RATIOS * 
+                     static_cast<double>(max_cache_sz))),
+      hot_elems_cap_(max_cache_sz - new_elems_cap_) {};
+
   // returns true on cache hit and false on cache miss
   template <typename F>
   bool lookup_update(T& element, KeyT key, F slow_get_page) {
-    if (isCacheHit(element, key)) {
+    if (is_cache_hit(element, key)) {
       return true;
     }
 
@@ -119,17 +120,17 @@ class lru2q_cache_t {
 
 #ifdef _DEBUG
   void dump_cache() const {
-    std::cout << "-----------------------\n2qcache: " << std::"\n";
+    std::cout << "-----------------------\n2qcache: " << std::endl;
     std::cout << "hot elems: ";
     for (auto& it : hot_elems_list_) {
       std::cout << it.index << " ";
     }
-    std::cout << std::"\n";
+    std::cout << std::endl;
     std::cout << "new elems: ";
     for (auto& it : new_elems_list_) {
       std::cout << it.index << " ";
     }
-    std::cout << std::"\n";
+    std::cout << std::endl;
     std::cout << "ghost keys: ";
     for (auto& it : ghost_keys_buff_) {
       std::cout << it << " ";

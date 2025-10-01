@@ -4,6 +4,7 @@
 
 namespace prophecy_cache_tests {
   static const CacheTestConf fromPresentation = {
+    .test_name = "from_presentation",
     .cache_size = 4,
     .queries = {
       {false, 1},
@@ -22,6 +23,7 @@ namespace prophecy_cache_tests {
   };
 
   static const CacheTestConf cacheSize1 = {
+    .test_name = "cache_size1",
     .cache_size = 1,
     .queries = {
       {false, 1},
@@ -37,6 +39,7 @@ namespace prophecy_cache_tests {
   };
 
   static const CacheTestConf period3_cap3 = {
+    .test_name = "period3_cap3",
     .cache_size = 3,
     .queries = {
       {false, 1},
@@ -52,6 +55,7 @@ namespace prophecy_cache_tests {
   };
 
   static const CacheTestConf period3_cap2 = {
+    .test_name = "period3_cap2",
     .cache_size = 2,
     .queries = {
       {false, 1},
@@ -67,6 +71,7 @@ namespace prophecy_cache_tests {
   };
 
   static const CacheTestConf reverse = {
+    .test_name = "reverse",
     .cache_size = 3,
     .queries = {
       {false, 1}, // 1

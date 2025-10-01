@@ -9,14 +9,14 @@
 template <typename T, typename KeyT = int>
 class cache_t {
  private:
-  const size_t max_cache_sz_ = 0;
+  const std::size_t max_cache_sz_ = 0;
   std::list<T> cache_ = {};
 
   using ListIt = typename std::list<T>::iterator;
   std::unordered_map<KeyT, ListIt> hash_ = {};
 
  public:
-  cache_t(size_t max_cache_sz) : max_cache_sz_(max_cache_sz) {
+  cache_t(std::size_t max_cache_sz) : max_cache_sz_(max_cache_sz) {
 
   }
 

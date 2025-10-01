@@ -4,6 +4,7 @@
 #include <set>
 #include <stack>
 #include <vector>
+#include <limits>
 
 #include "logLib.hpp"
 #include "webPageStruct.hpp"
@@ -50,12 +51,12 @@ class prophecy_cache_t {
     assert(!positions[ind].empty());
     std::size_t cur_pos = positions[ind].top();
     positions[ind].pop();
-    std::size_t nxt_pos = static_cast<std::size_t>(-1); // aka INF
+    std::size_t nxt_pos = std::numeric_limits<std::size_t>::max();
     if (!positions[ind].empty()) {
       nxt_pos = positions[ind].top();
     }
 
-    page_t _;
+    page_t _; // TODO:
     auto hit = cache_.find(std::make_pair(cur_pos, _));
     if (hit != cache_.end()) { // index found, it's a cache hit
       element = hit->second;

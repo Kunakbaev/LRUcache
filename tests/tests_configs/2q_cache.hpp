@@ -4,6 +4,7 @@
 
 namespace lru2q_cache_tests {
   static const CacheTestConf fromPresentation = {
+    .test_name = "from_presentation",
     .cache_size = 4,
     .queries = {
       {false, 1},
@@ -22,6 +23,7 @@ namespace lru2q_cache_tests {
   };
 
   static const CacheTestConf cacheSize1 = {
+    .test_name = "cache_size1",
     .cache_size = 1,
     .queries = {
       {false, 1},
@@ -37,6 +39,7 @@ namespace lru2q_cache_tests {
   };
 
   static const CacheTestConf cap3_1 = {
+    .test_name = "cap3_1",
     .cache_size = 3,
     .queries = {
       {false, 1},  // miss, add to Ain (ghost queue)
@@ -51,6 +54,7 @@ namespace lru2q_cache_tests {
   };
 
   static const CacheTestConf cap4_1 = {
+    .test_name = "cap4_1",
     .cache_size = 4,
     .queries = {
       {false, 1},  // miss, add to Ain
@@ -67,6 +71,7 @@ namespace lru2q_cache_tests {
   };
 
   static const CacheTestConf cap5_1 = {
+    .test_name = "cap5_1",
     .cache_size = 3,
     .queries = {
       {false, 1},  // miss, add to Ain
@@ -86,6 +91,7 @@ namespace lru2q_cache_tests {
   };
 
   static const CacheTestConf cap6_1 = {
+    .test_name = "cap6_1",
     .cache_size = 6,
     .queries = {
       {false, 1},  // miss, add to Ain
@@ -108,6 +114,7 @@ namespace lru2q_cache_tests {
   };
 
   static const CacheTestConf all_fit_big_cap = {
+    .test_name = "all_fit_big_cap",
     .cache_size = 100,
     .queries = {
       {false, 1},

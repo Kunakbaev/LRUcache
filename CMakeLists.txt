@@ -86,5 +86,6 @@ add_custom_target(show_help_msg
   COMMAND ${CMAKE_COMMAND} -E cat ${CMAKE_CURRENT_BINARY_DIR}/help_message.txt
 )
 
-add_subdirectory(cacheDriver)
+add_subdirectory(usecase/usecaseForTests)
+add_subdirectory(usecase/cacheDriver)
 add_subdirectory(tests)
