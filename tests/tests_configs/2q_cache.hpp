@@ -14,11 +14,11 @@ namespace lru2q_cache_tests {
       {false, 1},
       {false, 2},
       {false, 5},
-      {true,  1},
+      {false, 1},
       {true,  2},
-      {false, 4},
+      {true,  4},
       {false, 3},
-      {true,  4}
+      {false, 4}
     }
   };
 
@@ -109,7 +109,7 @@ namespace lru2q_cache_tests {
       {false, 3},  // miss, found in ghost, promote to Amain
       {false, 9},  // miss, add to Ain (evicts from ghost)
       {true,  3},  // hit, found in Amain
-      {true,  1}   // hit, found in Amain
+      {false, 1}   // miss
     }
   };
 

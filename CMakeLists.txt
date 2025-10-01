@@ -33,11 +33,6 @@ endif()
 
 
 
-
-
-
-
-
 # 1. Сначала генерируем config файл
 include(CMakePackageConfigHelpers)
 configure_package_config_file(
@@ -57,9 +52,7 @@ include_directories(webPage/include/)
 include_directories(cacheRealizations/LRUcache/)
 include_directories(cacheRealizations/2qCache/)
 include_directories(cacheRealizations/prophecyCache/)
-
-
-
+include_directories(common/)
 
 
 
@@ -89,3 +82,4 @@ add_custom_target(show_help_msg
 add_subdirectory(usecase/usecaseForTests)
 add_subdirectory(usecase/cacheDriver)
 add_subdirectory(tests)
+add_subdirectory(compare_hit_perf)

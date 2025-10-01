@@ -103,10 +103,12 @@ int main() {
   for (std::size_t _ = 0; _ < num_of_queries; ++_) {
     page_t page;
     page.index = requests[_];
-    LOG_DEBUG("-----------------");
+    LOG_DEBUG("a-----------------");
     LOG_DEBUG_VARS(page.index);
     if (cache.lookup_update(page, page.index, slow_get_page)) {
       hits += 1;
+      LOG_DEBUG_VARS(_);
+      LOG_WARNING("-----------hit----------");
     }
 
 #ifdef _DEBUG
