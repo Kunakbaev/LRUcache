@@ -6,9 +6,10 @@ add_executable(run_tests
   check_corr/tests_proph_cache_corr.cpp
 )
 
-target_compile_options( run_tests PRIVATE -DNO_LOG -DTESTS_)
-set_target_properties(  run_tests PROPERTIES RUNTIME_OUTPUT_DIRECTORY "${BUILD_DIR_PATH}")
-target_include_directories(run_tests PUBLIC
+target_compile_options(    run_tests PRIVATE ${COMPILATION_FLAGS})
+target_compile_definitions(run_tests PRIVATE NO_LOG TESTS_)
+set_target_properties(     run_tests PROPERTIES RUNTIME_OUTPUT_DIRECTORY "${BUILD_DIR_PATH}")
+target_include_directories(run_tests PRIVATE
   ${CMAKE_CURRENT_SOURCE_DIR}/
   ${CMAKE_CURRENT_SOURCE_DIR}/tests_configs/
 )

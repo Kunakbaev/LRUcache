@@ -8,7 +8,7 @@ class page_t {
   page_t() = default;
 
   page_t(std::size_t size, const std::string& data, std::size_t index2)
-    : size_(size), data_(data), index(index2) {}
+    : index(index2), size_(size), data_(data) {}
 
   friend void slow_get_page(std::size_t search_index, page_t& page);
 

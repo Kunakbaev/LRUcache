@@ -7,31 +7,48 @@ endif()
 
 message(STATUS "Build type: ${CMAKE_BUILD_TYPE}")
 
-set(CMAKE_CXX_STANDARD 17)
-set(CMAKE_C_STANDARD   17)
-
-set(ENV{CC}  "gcc")
-set(ENV{CXX} "g++")
+set(CMAKE_CXX_STANDARD 20)
+set(CMAKE_C_STANDARD   20)
 
 project("LRUcache")
 
-set(COMMON_CXX_FLAGS "-lm -ggdb3 -std=c++17 -Werror -Wall -Wextra -Weffc++ -Waggressive-loop-optimizations -Wc++14-compat -Wmissing-declarations -Wcast-align -Wcast-qual -Wchar-subscripts -Wconditionally-supported -Wconversion -Wctor-dtor-privacy -Wempty-body -Wfloat-equal -Wformat-nonliteral -Wformat-security -Wformat-signedness -Wformat=2 -Winline -Wlogical-op -Wnon-virtual-dtor -Wopenmp-simd -Woverloaded-virtual -Wpacked -Wpointer-arith -Winit-self -Wredundant-decls -Wshadow -Wsign-conversion -Wsign-promo -Wstrict-null-sentinel -Wstrict-overflow=2 -Wsuggest-attribute=noreturn -Wsuggest-final-methods -Wsuggest-final-types -Wsuggest-override -Wswitch-default -Wswitch-enum -Wsync-nand -Wundef -Wunreachable-code -Wunused -Wuseless-cast -Wvariadic-macros -Wno-literal-suffix -Wno-missing-field-initializers -Wno-narrowing -Wno-old-style-cast -Wno-varargs -Wstack-protector -fcheck-new -fsized-deallocation -fstack-protector -fstrict-overflow -flto-odr-type-merging -fno-omit-frame-pointer -pie -fPIE -Werror=vla")
+# --------------    set compilation flags   ----------------
 
-set(BUILD_DIR_PATH    "${CMAKE_BINARY_DIR}")
-set(WEB_PAGE_DIR_PATH "webPage/source/")
+# basic flags for compilation and debugging
+set(DEBUG_FLAGS -ggdb3 -fno-omit-frame-pointer)
+
+# general warnings
+set(WARNING_FLAGS -Wall -Wextra -Wpedantic)
+
+# security flags
+set(SECURITY_FLAGS -fstack-protector -pie -fPIE -Wformat=2 -Wformat-security)
+
+# specific flags
+set(CPP_SPECIFIC_FLAGS -Wnon-virtual-dtor -Woverloaded-virtual)
+
+set(COMMON_CXX_FLAGS ${WARNING_FLAGS})
+
+# ------------    specifying compilation options based on build type    ------------
 
 if(CMAKE_BUILD_TYPE STREQUAL "Release")
-  # removes assert checks and log lib output
-  add_compile_options(-Ofast -DNDEBUG -DNO_LOG)
+  add_compile_definitions(NO_LOG NDEBUG)
+  set(COMPILATION_FLAGS ${COMMON_CXX_FLAGS} -O2 -DNDEBUG)
   message(STATUS "Building in Release mode")
 elseif(CMAKE_BUILD_TYPE STREQUAL "Debug")
-  add_compile_options(${COMMON_CXX_FLAGS})
-  add_compile_options(-g -O0 -D_DEBUG)
+  add_compile_definitions(_DEBUG)
+  set(COMPILATION_FLAGS ${COMMON_CXX_FLAGS} -O0 -g ${SECURITY_FLAGS} ${CPP_SPECIFIC_FLAGS})
   message(STATUS "Building in Debug mode")
 endif()
 
+# --------------------------------------------------------
 
+if(CMAKE_BUILD_TYPE STREQUAL "Debug" AND USE_SANITIZERS)
+  add_compile_options(-fsanitize=address,undefined)
+  add_link_options(-fsanitize=address,undefined)
+  message(STATUS "Running with sanitizers")
+endif()
 
+# ----------------    adding logger lib submodule   -------------------
 
 # 1. Сначала генерируем config файл
 include(CMakePackageConfigHelpers)
@@ -47,18 +64,7 @@ set(my_loglib_DIR "${CMAKE_CURRENT_BINARY_DIR}")
 # 3. Добавляем subdirectory
 add_subdirectory(3dPartyModules/LoggerLib)
 
-include_directories(3dPartyModules/LoggerLib/include/)
-include_directories(webPage/include/)
-include_directories(cacheRealizations/LRUcache/)
-include_directories(cacheRealizations/2qCache/)
-include_directories(cacheRealizations/prophecyCache/)
-include_directories(common/)
-
-
-
-# add_custom_target(install_loger_local
-#   COMMAND ${CMAKE_MAKE_PROGRAM} install DESTDIR=${CMAKE_BINARY_DIR}/local_install -C ${CMAKE_CURRENT_SOURCE_DIR}
-# )
+# ----------------------    show help message target    ------------
 
 file(GENERATE OUTPUT ${CMAKE_CURRENT_BINARY_DIR}/help_message.txt CONTENT "
 Available targets:
@@ -79,7 +85,23 @@ add_custom_target(show_help_msg
   COMMAND ${CMAKE_COMMAND} -E cat ${CMAKE_CURRENT_BINARY_DIR}/help_message.txt
 )
 
+# --------------------------------------------------------
+
+include_directories(3dPartyModules/LoggerLib/include/)
+include_directories(webPage/include/)
+include_directories(cacheRealizations/LRUcache/)
+include_directories(cacheRealizations/2qCache/)
+include_directories(cacheRealizations/prophecyCache/)
+include_directories(common/)
+
+# -----------------------------------------------------
+
 add_subdirectory(usecase/usecaseForTests)
 # add_subdirectory(usecase/cacheDriver)
 add_subdirectory(tests)
 add_subdirectory(compare_hit_perf)
+
+# -----------------------------------------------------
+
+
+

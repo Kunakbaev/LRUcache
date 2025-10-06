@@ -15,9 +15,7 @@ TEST_P(Cache2QTest, AllTests) {
   const auto& params = GetParam();
   lru2q_cache_t<page_t, std::size_t> cache(params.cache_size);
 
-  std::size_t i = 0;
   for (auto [is_hit, index] : params.queries) {
-    // std::cerr << "i : " << ++i << std::endl;
     EXPECT_EQ(cache.lookup_update(page, index, slow_get_page), is_hit);
   }
 }

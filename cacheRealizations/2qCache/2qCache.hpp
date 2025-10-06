@@ -20,8 +20,8 @@ class lru2q_cache_t {
   static constexpr double GHOST_ELEMS_CAPACITY_RATIOS = 0.5;
   const size_t max_cache_sz_ = 0;
 
-  list_with_track_t<T, KeyT> hot_elems_list_   = {};
   list_with_track_t<T, KeyT> new_elems_list_   = {};
+  list_with_track_t<T, KeyT> hot_elems_list_   = {};
   list_with_track_t<T, KeyT> ghost_elems_list_ = {};
 
  private:
@@ -42,7 +42,7 @@ class lru2q_cache_t {
                        * sizeof(T) / sizeof(KeyT)) {}
 
   template <typename F>
-  void reclaim_for_x(KeyT key, F slow_get_page) {
+  void reclaim_for_x(__attribute__((unused)) KeyT key, __attribute__((unused)) F slow_get_page) {
     if (new_elems_list_.is_full()) {
       T    evicted_elem = new_elems_list_.get_tail_elem();
       KeyT evicted_key  = evicted_elem.index;

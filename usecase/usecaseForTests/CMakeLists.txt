@@ -1,32 +1,19 @@
-# add_executable(test_perf_lru_cache      plain_task.cpp)
-# add_executable(test_perf_2q_cache       plain_task.cpp)
-# add_executable(test_perf_prophecy_cache plain_task.cpp)
+function(create_cache_usecase_target target_name source_file cache_type)
+  add_executable(            ${target_name} ${source_file})
+  set_target_properties(     ${target_name} PROPERTIES RUNTIME_OUTPUT_DIRECTORY "${BUILD_DIR_PATH}")
+  # target_compile_options(    ${target_name} PRIVATE ${COMPILATION_FLAGS})
+  
+  if(cache_type STREQUAL "LRU")
+    target_compile_definitions(${target_name} PRIVATE TEST_PERF_ DONT_WANT_SLOW_GET_PAGE_ RUN_LRU_CACHE_)
+  elseif(cache_type STREQUAL "2Q")
+    target_compile_definitions(${target_name} PRIVATE TEST_PERF_ DONT_WANT_SLOW_GET_PAGE_ RUN_2Q_CACHE_)
+  elseif(cache_type STREQUAL "PROPHECY")
+    target_compile_definitions(${target_name} PRIVATE TEST_PERF_ DONT_WANT_SLOW_GET_PAGE_ RUN_PROPHECY_CACHE_)
+  endif()
+  
+  target_link_libraries(     ${target_name} PRIVATE my_loglib)
+endfunction()
 
-# set_target_properties(test_perf_lru_cache      PROPERTIES RUNTIME_OUTPUT_DIRECTORY "${BUILD_DIR_PATH}")
-# set_target_properties(test_perf_2q_cache       PROPERTIES RUNTIME_OUTPUT_DIRECTORY "${BUILD_DIR_PATH}")
-# set_target_properties(test_perf_prophecy_cache PROPERTIES RUNTIME_OUTPUT_DIRECTORY "${BUILD_DIR_PATH}")
-
-# target_compile_options(test_perf_lru_cache      PRIVATE -DTEST_PERF_ -DDONT_WANT_SLOW_GET_PAGE_ -DRUN_LRU_CACHE_)
-# target_compile_options(test_perf_2q_cache       PRIVATE -DTEST_PERF_ -DDONT_WANT_SLOW_GET_PAGE_ -DRUN_2Q_CACHE_)
-# target_compile_options(test_perf_prophecy_cache PRIVATE -DTEST_PERF_ -DDONT_WANT_SLOW_GET_PAGE_ -DRUN_PROPHECY_CACHE_)
-
-# target_link_libraries(test_perf_lru_cache      PRIVATE my_loglib)
-# target_link_libraries(test_perf_2q_cache       PRIVATE my_loglib)
-# target_link_libraries(test_perf_prophecy_cache PRIVATE my_loglib)
-
-add_executable(lru_cache      plain_task.cpp)
-add_executable(2q_cache       plain_task.cpp)
-add_executable(prophecy_cache plain_task.cpp)
-
-set_target_properties(lru_cache      PROPERTIES RUNTIME_OUTPUT_DIRECTORY "${BUILD_DIR_PATH}")
-set_target_properties(2q_cache       PROPERTIES RUNTIME_OUTPUT_DIRECTORY "${BUILD_DIR_PATH}")
-set_target_properties(prophecy_cache PROPERTIES RUNTIME_OUTPUT_DIRECTORY "${BUILD_DIR_PATH}")
-
-target_compile_options(lru_cache      PRIVATE -DTEST_PERF_ -DDONT_WANT_SLOW_GET_PAGE_ -DRUN_LRU_CACHE_)
-target_compile_options(2q_cache       PRIVATE -DTEST_PERF_ -DDONT_WANT_SLOW_GET_PAGE_ -DRUN_2Q_CACHE_)
-target_compile_options(prophecy_cache PRIVATE -DTEST_PERF_ -DDONT_WANT_SLOW_GET_PAGE_ -DRUN_PROPHECY_CACHE_)
-
-target_link_libraries(lru_cache      PRIVATE my_loglib)
-target_link_libraries(2q_cache       PRIVATE my_loglib)
-target_link_libraries(prophecy_cache PRIVATE my_loglib)
-
+create_cache_usecase_target(lru_cache      plain_task.cpp "LRU")
+create_cache_usecase_target(2q_cache       plain_task.cpp "2Q") 
+create_cache_usecase_target(prophecy_cache plain_task.cpp "PROPHECY")
