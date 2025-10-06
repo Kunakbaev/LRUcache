@@ -15,31 +15,37 @@
 template <typename T, typename KeyT = int>
 class lru2q_cache_t {
  private:
-  // = new_pages_capacity / hot_pages_capacity
+  struct just_page_index_t {
+    std::size_t index;
+    just_page_index_t(std::size_t ind) : index(ind) {}
+  };
+
   static constexpr double NEW_ELEMS_CAPACITY_RATIOS   = 0.8;
   static constexpr double GHOST_ELEMS_CAPACITY_RATIOS = 0.5;
   const size_t max_cache_sz_ = 0;
 
-  list_with_track_t<T, KeyT> new_elems_list_   = {};
-  list_with_track_t<T, KeyT> hot_elems_list_   = {};
-  list_with_track_t<T, KeyT> ghost_elems_list_ = {};
+  list_with_track_t<T,                 KeyT> new_elems_list_   = {};
+  list_with_track_t<T,                 KeyT> hot_elems_list_   = {};
+  list_with_track_t<just_page_index_t, KeyT> ghost_elems_list_ = {};
 
  private:
-  std::size_t get_new_elems_list_cap() const {
+  [[nodiscard]] std::size_t get_new_elems_list_cap() const {
     return static_cast<size_t>(NEW_ELEMS_CAPACITY_RATIOS * 
-                        static_cast<double>(max_cache_sz_));
+           static_cast<double>(max_cache_sz_));
+  }
+
+  [[nodiscard]] std::size_t get_ghost_elems_list_cap() const {
+    // size of ghost buffer is how many keys would fit in 50% of cache capacity
+    return static_cast<size_t>(GHOST_ELEMS_CAPACITY_RATIOS *
+           static_cast<double>(max_cache_sz_)) * sizeof(T) / sizeof(KeyT);
   }
 
  public:
-
   lru2q_cache_t(size_t max_cache_sz)
       : max_cache_sz_(max_cache_sz),
       new_elems_list_(get_new_elems_list_cap()),
       hot_elems_list_(max_cache_sz_ - get_new_elems_list_cap()),
-      // size of ghost buffer is how many keys would fit in 50% of cache capacity
-      ghost_elems_list_(static_cast<size_t>(GHOST_ELEMS_CAPACITY_RATIOS *
-                                            static_cast<double>(max_cache_sz))
-                       * sizeof(T) / sizeof(KeyT)) {}
+      ghost_elems_list_(get_ghost_elems_list_cap()) {}
 
   template <typename F>
   void reclaim_for_x(__attribute__((unused)) KeyT key, __attribute__((unused)) F slow_get_page) {
@@ -48,7 +54,8 @@ class lru2q_cache_t {
       KeyT evicted_key  = evicted_elem.index;
 
       new_elems_list_.remove_tail();
-      ghost_elems_list_.add2head(evicted_elem, evicted_key);
+      just_page_index_t just_index(evicted_elem.index);
+      ghost_elems_list_.add2head(just_index, evicted_key);
     }
   }
 
