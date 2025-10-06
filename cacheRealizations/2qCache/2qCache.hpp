@@ -20,6 +20,7 @@ class lru2q_cache_t {
     just_page_index_t(std::size_t ind) : index(ind) {}
   };
 
+  // = new elems list size / max_cache_sz
   static constexpr double NEW_ELEMS_CAPACITY_RATIOS   = 0.8;
   static constexpr double GHOST_ELEMS_CAPACITY_RATIOS = 0.5;
   const size_t max_cache_sz_ = 0;
@@ -48,18 +49,6 @@ class lru2q_cache_t {
       ghost_elems_list_(get_ghost_elems_list_cap()) {}
 
   template <typename F>
-  void reclaim_for_x(__attribute__((unused)) KeyT key, __attribute__((unused)) F slow_get_page) {
-    if (new_elems_list_.is_full()) {
-      T    evicted_elem = new_elems_list_.get_tail_elem();
-      KeyT evicted_key  = evicted_elem.index;
-
-      new_elems_list_.remove_tail();
-      just_page_index_t just_index(evicted_elem.index);
-      ghost_elems_list_.add2head(just_index, evicted_key);
-    }
-  }
-
-  template <typename F>
   bool lookup_update(T& element, KeyT key, F slow_get_page) {
     if (hot_elems_list_.is_element_present(key)) {
       hot_elems_list_.move_elem_to_the_head(key);
@@ -68,25 +57,16 @@ class lru2q_cache_t {
     }
 
     if (new_elems_list_.is_element_present(key)) {
-      // new_elems_list_.move_elem_to_the_head(key);
       element = new_elems_list_.get_link2element(key);
       return true;
     }
 
     slow_get_page(key, element);
-
     if (ghost_elems_list_.is_element_present(key)) {
-      reclaim_for_x(key, slow_get_page);
-
-      if (hot_elems_list_.is_full()) {
-        hot_elems_list_.remove_tail();
-      }
-
       hot_elems_list_.add2head(element, key);
       ghost_elems_list_.erase_element(key);
       return false;
     } else {
-      reclaim_for_x(key, slow_get_page);
       new_elems_list_.add2head(element, key);
       return false;
     }
