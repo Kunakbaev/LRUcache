@@ -11,7 +11,7 @@ function(create_cache_usecase_target target_name source_file cache_type)
     target_compile_definitions(${target_name} PRIVATE TEST_PERF_ DONT_WANT_SLOW_GET_PAGE_ RUN_PROPHECY_CACHE_)
   endif()
   
-  target_link_libraries(     ${target_name} PRIVATE my_loglib)
+  target_link_libraries(${target_name} PRIVATE my_loglib my_project_includes)
 endfunction()
 
 create_cache_usecase_target(lru_cache      plain_task.cpp "LRU")

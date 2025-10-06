@@ -56,8 +56,8 @@ class prophecy_cache_t {
       nxt_pos = positions[ind].top();
     }
 
-    page_t _; // TODO:
-    auto hit = cache_.find(std::make_pair(cur_pos, _));
+    page_t page; // TODO:
+    auto hit = cache_.find(std::make_pair(cur_pos, page));
     if (hit != cache_.end()) { // index found, it's a cache hit
       element = hit->second;
 
@@ -87,7 +87,7 @@ class prophecy_cache_t {
   void dump_cache() const {
     LOG_DEBUG("Cache dump:");
     for (auto [pos, elem_it] : cache_) {
-      LOG_DEBUG_VARS(pos, elem_it.index);
+      LOG_DEBUG_VARS(pos, elem_it.key);
     }
   }
 #endif

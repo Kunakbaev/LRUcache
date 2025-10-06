@@ -8,22 +8,27 @@
 template <typename T, typename KeyT = int>
 class list_with_track_t {
  private:
-  const std::size_t capacity_ = 0;
-  std::list<T> list_ = {};
+  struct key_and_elem_t {
+    T    elem;
+    KeyT key;
+    key_and_elem_t(T elem_, KeyT key_)
+      : elem(elem_), key(key_) {}
+  };
 
-  using ListIt = typename std::list<T>::iterator;
+  const std::size_t capacity_ = 0;
+  std::list<key_and_elem_t> list_ = {};
+
+  using ListIt = typename std::list<key_and_elem_t>::iterator;
   std::unordered_map<KeyT, ListIt> hash_ = {};
 
  public:
   list_with_track_t(std::size_t capacity)
     : capacity_(std::max(capacity, static_cast<std::size_t>(1))) {
-    // LOG_DEBUG_VARS(capacity_);
   }
 
   [[nodiscard]] std::size_t get_cap() const { return capacity_; }
 
   [[nodiscard]] bool is_full() const {
-    // LOG_DEBUG_VARS(list_.size(), capacity_);
     return list_.size() == capacity_;
   }
 
@@ -32,8 +37,7 @@ class list_with_track_t {
     if (!is_full()) return;
 
     // delete from tail
-    // LOG_DEBUG("del");
-    hash_.erase(list_.back().index);
+    hash_.erase(list_.back().key);
     list_.pop_back();
   }
 
@@ -41,14 +45,13 @@ class list_with_track_t {
   void add2head(T& element, KeyT key) {
     remove_tail();
 
-    list_.push_front(element);
+    list_.push_front({element, key});
     hash_[key] = list_.begin();
   }
 
   void erase_element(KeyT key) {
     auto it = hash_.find(key);
-    //assert(it != hash_.end());
-    if (it == hash_.end()) { // TODO:
+    if (it == hash_.end()) {
       return;
     }
 
@@ -75,11 +78,11 @@ class list_with_track_t {
   [[nodiscard]] T& get_link2element(KeyT key) const {
     auto it = hash_.find(key);
     assert(it != hash_.end());
-    return *it->second;
+    return it->second->elem;
   }
 
   [[nodiscard]] T get_tail_elem() const {
-    return list_.back();
+    return list_.back().elem;
   }
 
 #ifdef _DEBUG

@@ -18,6 +18,7 @@ target_link_libraries(run_tests
   GTest::gtest
   GTest::gtest_main
   my_loglib
+  my_project_includes
 )
 
 add_test(NAME RunAllTests COMMAND run_tests)

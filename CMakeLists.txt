@@ -8,7 +8,7 @@ endif()
 message(STATUS "Build type: ${CMAKE_BUILD_TYPE}")
 
 set(CMAKE_CXX_STANDARD 20)
-set(CMAKE_C_STANDARD   20)
+# set(CMAKE_C_STANDARD   20)
 
 project("LRUcache")
 
@@ -87,12 +87,18 @@ add_custom_target(show_help_msg
 
 # --------------------------------------------------------
 
-include_directories(3dPartyModules/LoggerLib/include/)
-include_directories(webPage/include/)
-include_directories(cacheRealizations/LRUcache/)
-include_directories(cacheRealizations/2qCache/)
-include_directories(cacheRealizations/prophecyCache/)
-include_directories(common/)
+# Create an interface library
+add_library(my_project_includes INTERFACE)
+
+# Add all include directories to the interface
+target_include_directories(my_project_includes INTERFACE
+  ${CMAKE_CURRENT_SOURCE_DIR}/3dPartyModules/LoggerLib/include/
+  ${CMAKE_CURRENT_SOURCE_DIR}/webPage/include/
+  ${CMAKE_CURRENT_SOURCE_DIR}/cacheRealizations/LRUcache/
+  ${CMAKE_CURRENT_SOURCE_DIR}/cacheRealizations/2qCache/
+  ${CMAKE_CURRENT_SOURCE_DIR}/cacheRealizations/prophecyCache/
+  ${CMAKE_CURRENT_SOURCE_DIR}/common/
+)
 
 # -----------------------------------------------------
 
