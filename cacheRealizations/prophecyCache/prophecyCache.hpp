@@ -9,6 +9,8 @@
 #include "logLib.hpp"
 #include "webPageStruct.hpp"
 
+namespace cache_implementations {
+
 template <typename T>
 struct set_comparator_t
 {
@@ -56,7 +58,7 @@ class prophecy_cache_t {
       nxt_pos = positions[ind].top();
     }
 
-    page_t page; // TODO:
+    webpage::page_t page; // TODO:
     auto hit = cache_.find(std::make_pair(cur_pos, page));
     if (hit != cache_.end()) { // index found, it's a cache hit
       element = hit->second;
@@ -91,4 +93,6 @@ class prophecy_cache_t {
     }
   }
 #endif
+};
+
 };

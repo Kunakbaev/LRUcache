@@ -87,9 +87,9 @@ std::size_t GetNumOfHits4cache(
 ) {
   std::size_t hits = 0;
   for (auto index : requests) {
-    page_t page;
+    webpage::page_t page;
     page.index = index;
-    if (cache.lookup_update(page, index, slow_get_page)) {
+    if (cache.lookup_update(page, index, webpage::slow_get_page)) {
       hits += 1;
     }
   }
@@ -134,9 +134,9 @@ int main() {
     std::size_t max_cache_sz    = static_cast<std::size_t>(my_random::GetIntDice(3, tests_specifications::MAX_CACHE_SZ));
     requests = GenRandomRequests(num_of_requests, max_page_ind);
 
-    cache_t<page_t, std::size_t>            lru_cache(max_cache_sz);
-    lru2q_cache_t<page_t, std::size_t>    lru2q_cache(max_cache_sz);
-    prophecy_cache_t<page_t, std::size_t> proph_cache(max_cache_sz, requests);
+    cache_implementations::         cache_t<webpage::page_t, std::size_t> lru_cache(max_cache_sz);
+    cache_implementations::   lru2q_cache_t<webpage::page_t, std::size_t> lru2q_cache(max_cache_sz);
+    cache_implementations::prophecy_cache_t<webpage::page_t, std::size_t> proph_cache(max_cache_sz, requests);
 
     std::size_t   lru_hits = GetNumOfHits4cache(lru_cache,   requests);
     std::size_t lru2q_hits = GetNumOfHits4cache(lru2q_cache, requests);

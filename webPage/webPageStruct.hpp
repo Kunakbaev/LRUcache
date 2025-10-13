@@ -3,6 +3,8 @@
 #include <iostream>
 #include <string>
 
+namespace webpage {
+
 class page_t {
  public:
   page_t() = default;
@@ -31,4 +33,6 @@ inline void slow_get_page(std::size_t search_index, page_t& page) {
 #endif
 
   page.index = search_index;
+}
+
 }

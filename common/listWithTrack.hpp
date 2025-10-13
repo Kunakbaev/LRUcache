@@ -45,7 +45,7 @@ class list_with_track_t {
   void add2head(T& element, KeyT key) {
     remove_tail();
 
-    list_.push_front({element, key});
+    list_.emplace_front(element, key);
     hash_[key] = list_.begin();
   }
 

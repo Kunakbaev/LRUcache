@@ -93,7 +93,7 @@ add_library(my_project_includes INTERFACE)
 # Add all include directories to the interface
 target_include_directories(my_project_includes INTERFACE
   ${CMAKE_CURRENT_SOURCE_DIR}/3dPartyModules/LoggerLib/include/
-  ${CMAKE_CURRENT_SOURCE_DIR}/webPage/include/
+  ${CMAKE_CURRENT_SOURCE_DIR}/webPage/
   ${CMAKE_CURRENT_SOURCE_DIR}/cacheRealizations/LRUcache/
   ${CMAKE_CURRENT_SOURCE_DIR}/cacheRealizations/2qCache/
   ${CMAKE_CURRENT_SOURCE_DIR}/cacheRealizations/prophecyCache/
@@ -103,7 +103,7 @@ target_include_directories(my_project_includes INTERFACE
 # -----------------------------------------------------
 
 add_subdirectory(usecase/usecaseForTests)
-# add_subdirectory(usecase/cacheDriver)
+add_subdirectory(usecase/withInputValidation)
 add_subdirectory(tests)
 add_subdirectory(compare_hit_perf)
 

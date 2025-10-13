@@ -7,15 +7,13 @@
 #include "webPageStruct.hpp"
 #include "listWithTrack.hpp"
 
+namespace cache_implementations {
+
 template <typename T, typename KeyT = int>
 class cache_t {
  private:
   const std::size_t max_cache_sz_ = 0;
   list_with_track_t<T, KeyT> list_;
-  // std::list<T> cache_ = {};
-
-  // using ListIt = typename std::list<T>::iterator;
-  // std::unordered_map<KeyT, ListIt> hash_ = {};
 
  public:
   cache_t(std::size_t max_cache_sz) : list_(max_cache_sz) {}
@@ -24,9 +22,7 @@ class cache_t {
   template <typename F>
   bool lookup_update(T& element, KeyT key, F slow_get_page) {
     if (!list_.is_element_present(key)) { // not found
-      // LOG_DEBUG("page not found");
       if (list_.is_full()) {
-        // LOG_DEBUG("cache is full...");
         list_.remove_tail();
       }
 
@@ -48,4 +44,6 @@ class cache_t {
     std::cout << std::endl;
   }
 #endif
+};
+
 };

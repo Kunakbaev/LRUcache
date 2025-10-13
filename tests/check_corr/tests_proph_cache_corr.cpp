@@ -16,18 +16,18 @@ static std::vector<std::size_t> GetRequestsFromQueries(test_queries_t& queries) 
 
 class ProphecyCacheTest : public ::testing::TestWithParam<CacheTestConf> {
 protected:
-  page_t page;
+  webpage::page_t page;
 };
 
 TEST_P(ProphecyCacheTest, AllTests) {
   const auto& params = GetParam();
   test_queries_t queries = params.queries;
-  prophecy_cache_t<page_t, std::size_t> cache(
+  cache_implementations::prophecy_cache_t<webpage::page_t, std::size_t> cache(
     params.cache_size,
     GetRequestsFromQueries(queries)
   );
   for (auto [is_hit, index] : queries) {
-    EXPECT_EQ(cache.lookup_update(page, index, slow_get_page), is_hit);
+    EXPECT_EQ(cache.lookup_update(page, index, webpage::slow_get_page), is_hit);
   }
 }
 

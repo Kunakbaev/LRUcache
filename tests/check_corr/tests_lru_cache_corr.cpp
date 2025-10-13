@@ -8,15 +8,15 @@ using queries_list_t = std::vector<std::pair<bool, std::size_t>>;
 
 class LRUcacheTest : public ::testing::TestWithParam<CacheTestConf> {
 protected:
-  page_t page;
+  webpage::page_t page;
 };
 
 TEST_P(LRUcacheTest, AllTests) {
   const auto& params = GetParam();
-  cache_t<page_t, std::size_t> cache(params.cache_size);
+  cache_implementations::cache_t<webpage::page_t, std::size_t> cache(params.cache_size);
 
   for (auto [is_hit, index] : params.queries) {
-    EXPECT_EQ(cache.lookup_update(page, index, slow_get_page), is_hit);
+    EXPECT_EQ(cache.lookup_update(page, index, webpage::slow_get_page), is_hit);
   }
 }
 

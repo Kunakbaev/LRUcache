@@ -11,6 +11,8 @@
 #include "webPageStruct.hpp"
 #include "logLib.hpp"
 
+namespace cache_implementations {
+
 // original algorithm paper: https://www.vldb.org/conf/1994/P439.PDF
 template <typename T, typename KeyT = int>
 class lru2q_cache_t {
@@ -41,15 +43,9 @@ class lru2q_cache_t {
            static_cast<double>(max_cache_sz_)) * sizeof(T) / sizeof(KeyT);
   }
 
- public:
-  lru2q_cache_t(size_t max_cache_sz)
-      : max_cache_sz_(max_cache_sz),
-      new_elems_list_(get_new_elems_list_cap()),
-      hot_elems_list_(max_cache_sz_ - get_new_elems_list_cap()),
-      ghost_elems_list_(get_ghost_elems_list_cap()) {}
-
-  template <typename F>
-  bool lookup_update(T& element, KeyT key, F slow_get_page) {
+  // returns true, if key is find in cache (i.e. stored in hot or new elements list)
+  // loads page to element on successful find
+  bool try_find_cached_element(T& element, KeyT key) {
     if (hot_elems_list_.is_element_present(key)) {
       hot_elems_list_.move_elem_to_the_head(key);
       element = hot_elems_list_.get_link2element(key);
@@ -61,15 +57,31 @@ class lru2q_cache_t {
       return true;
     }
 
+    return false;
+  }
+
+ public:
+  lru2q_cache_t(size_t max_cache_sz)
+      : max_cache_sz_(max_cache_sz),
+      new_elems_list_(get_new_elems_list_cap()),
+      hot_elems_list_(max_cache_sz_ - get_new_elems_list_cap()),
+      ghost_elems_list_(get_ghost_elems_list_cap()) {}
+
+  template <typename F>
+  bool lookup_update(T& element, KeyT key, F slow_get_page) {
+    if (try_find_cached_element(element, key)) {
+      return true;
+    }
+
     slow_get_page(key, element);
     if (ghost_elems_list_.is_element_present(key)) {
       hot_elems_list_.add2head(element, key);
       ghost_elems_list_.erase_element(key);
-      return false;
     } else {
       new_elems_list_.add2head(element, key);
-      return false;
     }
+
+    return false;
   }
 
 #ifdef _DEBUG
@@ -86,4 +98,6 @@ class lru2q_cache_t {
     std::cout << std::endl;
   }
 #endif
+};
+
 };

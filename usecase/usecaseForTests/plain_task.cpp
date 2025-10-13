@@ -26,11 +26,11 @@ int main() {
   }
 
 #ifdef RUN_LRU_CACHE_
-  cache_t<page_t, std::size_t> cache(max_cache_size);
+  cache_implementations::cache_t<webpage::page_t, std::size_t> cache(max_cache_size);
 #elif RUN_2Q_CACHE_
-  lru2q_cache_t<page_t, std::size_t> cache(max_cache_size);
+  cache_implementations::lru2q_cache_t<webpage::page_t, std::size_t> cache(max_cache_size);
 #elif RUN_PROPHECY_CACHE_
-  prophecy_cache_t<page_t, std::size_t> cache(max_cache_size, requests);
+  cache_implementations::prophecy_cache_t<webpage::page_t, std::size_t> cache(max_cache_size, requests);
 #else
   LOG_ERROR("Error: invalid debug option for target, no cache type was chosen...\n");
   exit(0);
@@ -38,9 +38,9 @@ int main() {
 
   std::size_t hits = 0;
   for (std::size_t _ = 0; _ < num_of_queries; ++_) {
-    page_t page;
+    webpage::page_t page;
     page.index = requests[_];
-    if (cache.lookup_update(page, page.index, slow_get_page)) {
+    if (cache.lookup_update(page, page.index, webpage::slow_get_page)) {
       hits += 1;
     }
   }

@@ -1,7 +1,7 @@
 function(create_cache_usecase_target target_name source_file cache_type)
-  add_executable(            ${target_name} ${source_file})
-  set_target_properties(     ${target_name} PROPERTIES RUNTIME_OUTPUT_DIRECTORY "${BUILD_DIR_PATH}")
-  # target_compile_options(    ${target_name} PRIVATE ${COMPILATION_FLAGS})
+  add_executable(        ${target_name} ${source_file})
+  set_target_properties( ${target_name} PROPERTIES RUNTIME_OUTPUT_DIRECTORY "${BUILD_DIR_PATH}")
+  # target_compile_options(${target_name} PRIVATE ${COMPILATION_FLAGS})
   
   if(cache_type STREQUAL "LRU")
     target_compile_definitions(${target_name} PRIVATE TEST_PERF_ DONT_WANT_SLOW_GET_PAGE_ RUN_LRU_CACHE_)
