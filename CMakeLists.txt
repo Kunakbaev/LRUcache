@@ -94,9 +94,9 @@ add_library(my_project_includes INTERFACE)
 target_include_directories(my_project_includes INTERFACE
   ${CMAKE_CURRENT_SOURCE_DIR}/3dPartyModules/LoggerLib/include/
   ${CMAKE_CURRENT_SOURCE_DIR}/webPage/
-  ${CMAKE_CURRENT_SOURCE_DIR}/cacheRealizations/LRUcache/
-  ${CMAKE_CURRENT_SOURCE_DIR}/cacheRealizations/2qCache/
-  ${CMAKE_CURRENT_SOURCE_DIR}/cacheRealizations/prophecyCache/
+  ${CMAKE_CURRENT_SOURCE_DIR}/cacheImplementations/LRUcache/
+  ${CMAKE_CURRENT_SOURCE_DIR}/cacheImplementations/2qCache/
+  ${CMAKE_CURRENT_SOURCE_DIR}/cacheImplementations/prophecyCache/
   ${CMAKE_CURRENT_SOURCE_DIR}/common/
 )
 

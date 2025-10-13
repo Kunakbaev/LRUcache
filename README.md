@@ -99,7 +99,7 @@ tree -d -L 1
 .
 ├── 3dPartyModules
 ├── bin
-├── cacheRealizations
+├── cacheImplementations
 ├── common
 ├── compare_hit_perf
 ├── tests
@@ -107,7 +107,7 @@ tree -d -L 1
 └── webPage
 ```
 
-* **cacheRealizations** dir contains realizations of 3 cache types: LRU, 2q and "prophecy" (Belady algorithm) caches.
+* **cacheImplementations** dir contains implementations of 3 cache types: LRU, 2q and "prophecy" (Belady algorithm) caches.
 * **tests** - contains tests of different kinds. There are scripts which use *gtests*, they check that each cache type works correctly. In addition, there are scripts that check how fast each implementation works - loaded performance of some sort.
 * **compare_hit_perf** - there's program that compares cache efficiencies of different caches. It requires prophecy cache to always have the biggest number of hits, as it's most optimal and can see all queries at once. In addition it shows table of hit performances of each cache type for every test case.
 * **usecase/cacheDriver** - there's a usecase of cache, this is simply an implementation of described task, I've used it for debug purposes and quick tests. For an input it expects to get cache size and number of queries, then it reads indexes of pages in stated quantity.
