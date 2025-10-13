@@ -2,7 +2,7 @@
 
 #include "../tests_structs.hpp"
 
-namespace prophecy_cache_tests {
+namespace check_correctness::prophecy_cache_tests {
   static const CacheTestConf fromPresentation = {
     .test_name = "from_presentation",
     .cache_size = 4,

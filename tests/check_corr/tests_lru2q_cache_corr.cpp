@@ -4,12 +4,11 @@
 #include "tests_structs.hpp"
 #include "2qCache.hpp"
 
+namespace check_correctness {
+
 using queries_list_t = std::vector<std::pair<bool, std::size_t>>;
 
-class Cache2QTest : public ::testing::TestWithParam<CacheTestConf> {
-protected:
-  webpage::page_t page;
-};
+class Cache2QTest : public CacheTest {};
 
 TEST_P(Cache2QTest, AllTests) {
   const auto& params = GetParam();
@@ -34,8 +33,10 @@ static std::vector<CacheTestConf> lru2q_test_cases = {
 INSTANTIATE_TEST_SUITE_P(
   LRU2QCacheTests,
   Cache2QTest,
-  ::testing::ValuesIn(lru2q_test_cases),
-  [](const ::testing::TestParamInfo<CacheTestConf>& info) {
+  testing::ValuesIn(lru2q_test_cases),
+  [](const testing::TestParamInfo<CacheTestConf>& info) {
     return info.param.test_name;
   }
 );
+
+};

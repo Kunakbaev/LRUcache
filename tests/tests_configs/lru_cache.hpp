@@ -2,7 +2,7 @@
 
 #include "../tests_structs.hpp"
 
-namespace lru_cache_tests {
+namespace check_correctness::lru_cache_tests {
   static const CacheTestConf fromPresentation = {
     .test_name = "from_presentation",
     .cache_size = 4,

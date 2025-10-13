@@ -4,6 +4,8 @@
 #include "tests_structs.hpp"
 #include "prophecyCache.hpp"
 
+namespace check_correctness {
+
 static std::vector<std::size_t> GetRequestsFromQueries(test_queries_t& queries) {
   std::vector<std::size_t> reqs = {};
   reqs.reserve(queries.size());
@@ -14,10 +16,7 @@ static std::vector<std::size_t> GetRequestsFromQueries(test_queries_t& queries) 
   return reqs;
 }
 
-class ProphecyCacheTest : public ::testing::TestWithParam<CacheTestConf> {
-protected:
-  webpage::page_t page;
-};
+class ProphecyCacheTest : public CacheTest {};
 
 TEST_P(ProphecyCacheTest, AllTests) {
   const auto& params = GetParam();
@@ -43,9 +42,10 @@ static std::vector<CacheTestConf> prophecy_cache_test_cases = {
 INSTANTIATE_TEST_SUITE_P(
   ProphecyCacheTests,
   ProphecyCacheTest,
-  ::testing::ValuesIn(prophecy_cache_test_cases),
-  [](const ::testing::TestParamInfo<CacheTestConf>& info) {
+  testing::ValuesIn(prophecy_cache_test_cases),
+  [](const testing::TestParamInfo<CacheTestConf>& info) {
     return info.param.test_name;
   }
 );
 
+};
